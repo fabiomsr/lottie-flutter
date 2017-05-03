@@ -1,5 +1,6 @@
 import 'package:Lotie_Flutter/model/GradientColor.dart';
 import 'package:Lotie_Flutter/model/Keyframe.dart';
+import 'package:Lotie_Flutter/model/PointF.dart';
 import 'package:Lotie_Flutter/model/Scene.dart';
 import 'package:Lotie_Flutter/utils/Maths.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ class Parsers {
   static const ColorParser colorParser = const ColorParser();
   static const IntParser intParser = const IntParser();
   static const DoubleParser doubleParser = const DoubleParser();
+  static const PointFParser pointFParser = const PointFParser();
+  static const ScaleParser scaleParser = const ScaleParser();
 }
 
 
@@ -36,6 +39,36 @@ class DoubleParser implements Parser<double> {
   }
 
 }
+
+class PointFParser implements Parser<PointF> {
+
+  const PointFParser();
+
+  @override
+  PointF parse(dynamic json, double scale) {
+    if(json is List && json.length >= 2) {
+      return new PointF(json[0] * scale, json[1] * scale);
+    }
+
+    if (json is Map) {
+      return new PointF(json['x'] * scale, json['y'] * scale);
+    }
+
+    throw new ArgumentError.value(json, "json", "Unable to parse point");
+  }
+}
+
+class ScaleParser implements Parser<PointF> {
+
+  const ScaleParser();
+
+  @override
+  PointF parse(dynamic list, double scale) {
+    return new PointF(list[0] / 100.0 * scale, list[1] / 100.0 * scale);
+  }
+
+}
+
 
 class ColorParser implements Parser<Color> {
 
