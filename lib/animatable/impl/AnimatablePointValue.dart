@@ -4,7 +4,7 @@ import 'package:Lotie_Flutter/animation/BaseKeyframeAnimation.dart';
 import 'package:Lotie_Flutter/animation/KeyframeAnimation.dart';
 import 'package:Lotie_Flutter/animation/impl/StaticKeyframeAnimation.dart';
 import 'package:Lotie_Flutter/model/Keyframe.dart';
-import 'package:Lotie_Flutter/model/PointF.dart';
+import 'package:Lotie_Flutter/model/AnimationValues.dart';
 import 'package:Lotie_Flutter/model/Scene.dart';
 import 'package:Lotie_Flutter/parser/Parser.dart';
 

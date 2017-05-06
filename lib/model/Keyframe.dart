@@ -13,8 +13,6 @@ class Keyframe<T> {
   T _endValue;
   Curve _curve;
 
-  Keyframe._();
-
   double get startProgress => startFrame / _durationFrames;
 
   double get endProgress => endFrame == null ? 1 : endFrame / _durationFrames;
@@ -29,6 +27,10 @@ class Keyframe<T> {
 
   bool containsProgress(double progress) =>
       progress >= startProgress && progress <= endProgress;
+
+
+  Keyframe([this.startFrame, this.endFrame, this._durationFrames,
+      this._startValue, this._endValue]);
 
   Keyframe.fromMap(Map<String, dynamic> map, Parser<T> parser, double scale) {
     if (map.containsKey('t')) {

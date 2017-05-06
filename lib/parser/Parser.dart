@@ -1,6 +1,6 @@
 import 'package:Lotie_Flutter/model/GradientColor.dart';
 import 'package:Lotie_Flutter/model/Keyframe.dart';
-import 'package:Lotie_Flutter/model/PointF.dart';
+import 'package:Lotie_Flutter/model/AnimationValues.dart';
 import 'package:Lotie_Flutter/model/Scene.dart';
 import 'package:Lotie_Flutter/utils/Maths.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ class Parsers {
   static const DoubleParser doubleParser = const DoubleParser();
   static const PointFParser pointFParser = const PointFParser();
   static const ScaleParser scaleParser = const ScaleParser();
+  static const ShapeDataParser shapeDataParser = const ShapeDataParser();
 }
 
 
@@ -46,7 +47,11 @@ class PointFParser implements Parser<PointF> {
 
   @override
   PointF parse(dynamic json, double scale) {
-    if(json is List && json.length >= 2) {
+    if (json == null) {
+      return null;
+    }
+
+    if (json is List && json.length >= 2) {
       return new PointF(json[0] * scale, json[1] * scale);
     }
 
@@ -92,6 +97,75 @@ class ColorParser implements Parser<Color> {
     final int green = map[1] * multiplier;
     final int blue = map[2] * multiplier;
     return new Color.fromARGB(alpha, red, green, blue);
+  }
+}
+
+
+class ShapeDataParser implements Parser<ShapeData> {
+
+  const ShapeDataParser();
+
+  @override
+  ShapeData parse(dynamic json, double scale) {
+    Map pointsData;
+
+    if (json is List) {
+      if (json[0] is Map && json[0].containsKey('v')) {
+        pointsData = json[0];
+      }
+    } else if (json is Map && json.containsKey('v')) {
+      pointsData = json;
+    }
+
+    if (pointsData == null) {
+      return null;
+    }
+
+    List points = pointsData['v'];
+    List inTangents = pointsData['i'];
+    List outTangents = pointsData['o'];
+    bool closed = pointsData['c'] ?? false;
+
+    if (points == null || inTangents == null || outTangents == null ||
+        points.length != inTangents.length ||
+        points.length != outTangents.length) {
+      throw new StateError(
+          "Unable to process points array or tangets. $pointsData");
+    } else if (points.isEmpty) {
+      return new ShapeData(new List(0), new PointF(), false);
+    }
+
+    PointF initialPoint = _vertexAtIndex(0, points).scaleXY(scale);
+    List<CubicCurveData> curves = new List<CubicCurveData>(points.length);
+
+    for(int i = 1; i < points.length; i++) {
+      PointF vertex = _vertexAtIndex(i, points);
+      PointF previousVertex = _vertexAtIndex(i - 1, points);
+      PointF cp1 = _vertexAtIndex(i - 1, outTangents);
+      PointF cp2 = _vertexAtIndex(i, inTangents);
+      PointF shapeCp1 = (previousVertex + cp1).scale(scale, scale);
+      PointF shapeCp2 = (vertex + cp2).scale(scale, scale);
+      PointF scaleVertex = vertex.scaleXY(scale);
+      curves.add(new CubicCurveData(shapeCp1, shapeCp2, scaleVertex));
+    }
+
+    if(closed) {
+      PointF vertex = _vertexAtIndex(0, points);
+      PointF previousVertex = _vertexAtIndex(points.length, points);
+      PointF cp1 = _vertexAtIndex(points.length - 1, outTangents);
+      PointF cp2 = _vertexAtIndex(0, inTangents);
+
+      PointF shape1 = (previousVertex + cp1).scale(scale, scale);
+      PointF shape2 = (vertex + cp2).scale(scale, scale);
+      PointF scaleVertex = vertex.scaleXY(scale);
+      curves.add(new CubicCurveData(shape1, shape2, scaleVertex));
+    }
+
+    return new ShapeData(curves, initialPoint, closed);
+  }
+
+  PointF _vertexAtIndex(int index, List points) {
+    return new PointF(points[index][0], points[index][1]);
   }
 }
 

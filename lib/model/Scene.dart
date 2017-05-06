@@ -17,13 +17,13 @@ class Scene<T> {
 
 
   Scene(this._keyframes) {
-    joinFrames();
+    _joinKeyframes();
   }
 
   Scene.empty() : this._keyframes = new List(0);
 
-  Scene.fromMap(Map map, Parser<T> parser, scale) {
-    if (map == null || !_hasKeyframes(map)) {
+  Scene.fromMap(dynamic map, Parser<T> parser, scale) {
+    if (map == null || !hasKeyframes(map)) {
       this._keyframes = new List(0);
     }
 
@@ -35,24 +35,14 @@ class Scene<T> {
     this._keyframes = rawKeyframes.map((rawKeyframe) =>
                                       new Keyframe.fromMap(rawKeyframe, parser, scale))
                                   .toList();
-    joinFrames();
-  }
-
-  bool _hasKeyframes(Map map) {
-    if (map is List) {
-      return false;
-    }
-
-    var first = map[0];
-
-    return first is Map && first.containsKey('t');
+    _joinKeyframes();
   }
 
   //
   //  The json doesn't include end frames. The data can be taken from the start frame of the next
   //  keyframe though.
   //
-  void joinFrames() {
+  void _joinKeyframes() {
     final int length = _keyframes.length;
 
     for (int i = 0; i < length - 1; i++) {
@@ -72,4 +62,14 @@ class Scene<T> {
   }
 
 
+}
+
+bool hasKeyframes(dynamic map) {
+  if (map is List) {
+  return false;
+  }
+
+  var first = map[0];
+
+  return first is Map && first.containsKey('t');
 }
