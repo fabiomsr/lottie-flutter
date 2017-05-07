@@ -1,9 +1,6 @@
-import 'dart:math' show Point;
 
-import 'package:Lotie_Flutter/utils/Maths.dart';
-import 'package:flutter/painting.dart' as paint show Path,Offset;
-
-
+import 'package:Lotie_Flutter/src/utils.dart';
+import 'package:flutter/painting.dart' as paint show Path, Offset, Color;
 
 class PointF extends paint.Offset {
   const PointF([double x = 0.0, double y = 0.0]) : super(x, y);
@@ -115,6 +112,34 @@ class ShapeData {
       CubicCurveData curve = new CubicCurveData(
           new PointF(x1, y1), new PointF(x2, y2), new PointF(vertexX, vertexY));
       _curves.add(curve);
+    }
+  }
+
+}
+
+
+class GradientColor {
+  final List<double> _positions;
+  final List<paint.Color> _colors;
+
+  GradientColor(this._positions, this._colors);
+
+  List<double> get positions => _positions;
+
+  List<paint.Color> get colors => _colors;
+
+  int get length => _colors.length;
+
+  void lerpGradients(GradientColor gc1, GradientColor gc2, double progress) {
+    if (gc1.length != gc2.length) {
+      throw new ArgumentError(
+          "Cannot interpolate between gradients. Lengths vary (${gc1
+              .length} vs ${gc2.length})");
+    }
+
+    for (int i = 0; i < gc1.colors.length; i++) {
+      positions[i] = lerp(gc1.positions[i], gc2.positions[i], progress);
+      colors[i] = GammaEvaluator.evaluate(progress, gc1.colors[i], gc2.colors[i]);
     }
   }
 

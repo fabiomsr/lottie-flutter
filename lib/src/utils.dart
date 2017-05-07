@@ -1,12 +1,15 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-
 // Use this instead of [Color.lerp] because it interpolates through the gamma color
 // space which looks better to us humans.
 //
 // Writted by Romain Guy and Francois Blavoet.
 // https://androidstudygroup.slack.com/archives/animation/p1476461064000335
+
+import 'dart:math';
+import 'package:flutter/painting.dart' show Color;
+
+double lerp(double a, double b, double percentage) => a + percentage * (b - a);
+
+int lerpInt(int a, int b, double percentage) => (a + percentage * (b - a)).toInt();
 
 class GammaEvaluator {
 

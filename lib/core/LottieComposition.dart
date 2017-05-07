@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'package:Lotie_Flutter/core/Layer.dart';
+import 'package:Lotie_Flutter/src/layers.dart';
 import 'package:Lotie_Flutter/core/LottieImageAsset.dart';
 import 'package:flutter/painting.dart';
 import 'package:meta/meta.dart';

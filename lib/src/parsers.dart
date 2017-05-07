@@ -1,9 +1,8 @@
-import 'package:Lotie_Flutter/model/GradientColor.dart';
-import 'package:Lotie_Flutter/model/Keyframe.dart';
-import 'package:Lotie_Flutter/model/AnimationValues.dart';
-import 'package:Lotie_Flutter/model/Scene.dart';
-import 'package:Lotie_Flutter/utils/Maths.dart';
-import 'package:flutter/material.dart';
+
+import 'package:Lotie_Flutter/src/utils.dart';
+import 'package:Lotie_Flutter/src/values.dart';
+import 'package:flutter/material.dart' show Color, Colors;
+
 
 class Parsers {
 
@@ -25,20 +24,14 @@ class IntParser implements Parser<int> {
   const IntParser();
 
   @override
-  int parse(dynamic map, double scale) {
-    return map * scale;
-  }
-
+  int parse(dynamic map, double scale) => map == null ? 100 : map * scale;
 }
 
 class DoubleParser implements Parser<double> {
   const DoubleParser();
 
   @override
-  double parse(dynamic map, double scale) {
-    return map * scale;
-  }
-
+  double parse(dynamic map, double scale) => map == null ? 0.0 : map * scale;
 }
 
 class PointFParser implements Parser<PointF> {
@@ -191,7 +184,7 @@ class GradientColorParser extends Parser<GradientColor> {
     final GradientColor gradientColor = new GradientColor(positions, colors);
 
     if (rawGradientColor.length != _colorPoints * 4) {
-      debugPrint("Unexpected gradient length: ${rawGradientColor.length}"
+      print("Unexpected gradient length: ${rawGradientColor.length}"
           ". Expected ${_colorPoints *
           4} . This may affect the appearance of the gradient. "
           "Make sure to save your After Effects file before exporting an animation with "
@@ -261,33 +254,3 @@ class GradientColorParser extends Parser<GradientColor> {
 }
 
 
-class AnimatableValueParser<T> {
-
-  KeyframeGroup<T> parse(dynamic map, Parser<T> parser, double scale) {
-    Scene scene = _parseKeyframes(map, parser, scale);
-    T initialValue = _parseInitialValue(map, scene.keyframes, parser, scale);
-    return new KeyframeGroup(initialValue, scene);
-  }
-
-  Scene _parseKeyframes(dynamic map, Parser<T> parser, double scale) {
-    return new Scene.fromMap(map, parser, scale);
-  }
-
-  T _parseInitialValue(dynamic map, List<Keyframe<T>> keyframes,
-      Parser<T> parser, scale) {
-    if (map == null) {
-      return null;
-    }
-
-    return keyframes.isNotEmpty ? keyframes.first.startValue : parser.parse(
-        map['k'], scale);
-  }
-
-}
-
-class KeyframeGroup<T> {
-  final Scene scene;
-  final T initialValue;
-
-  KeyframeGroup(this.initialValue, this.scene);
-}
