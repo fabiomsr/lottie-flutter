@@ -5,9 +5,9 @@ import 'package:flutter/animation.dart' show Curve, Curves, Cubic;
 class Keyframe<T> {
   static const int MAX_CP_VALUE = 100;
 
-  double startFrame;
-  double endFrame;
-  int _durationFrames;
+  int startFrame;
+  int endFrame;
+  double _durationFrames;
   T _startValue;
   T _endValue;
   Curve _curve;
@@ -75,7 +75,7 @@ class PathKeyframe extends Keyframe<PointF> {
 
   Path get path => _path;
 
-  PathKeyframe(double startFrame, double endFrame, int durationFrames,
+  PathKeyframe(int startFrame, int endFrame, double durationFrames,
       PointF startValue, PointF endValue)
       : super(startFrame, endFrame, durationFrames, startValue, endValue);
 

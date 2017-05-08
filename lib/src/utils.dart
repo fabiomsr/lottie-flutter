@@ -11,6 +11,24 @@ double lerp(double a, double b, double percentage) => a + percentage * (b - a);
 
 int lerpInt(int a, int b, double percentage) => (a + percentage * (b - a)).toInt();
 
+/// Parse the color string and return the corresponding Color.
+/// Supported formatS are:
+/// #RRGGBB and #AARRGGBB
+Color parseColor(String colorString) {
+  if(colorString[0] == '#') {
+    int color = int.parse(colorString.substring(0), radix: 16, onError: (source) => null);
+    if(colorString.length == 7) {
+      return new Color(color |= 0x00000000ff000000);
+    }
+
+    if(colorString.length == 9) {
+      return new Color(color);
+    }
+  }
+
+  throw new ArgumentError.value(colorString, "colorString", "Unknown color");
+}
+
 class GammaEvaluator {
 
   GammaEvaluator._();

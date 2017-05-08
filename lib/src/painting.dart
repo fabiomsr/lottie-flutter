@@ -1,9 +1,7 @@
 import 'package:Lotie_Flutter/src/animatables.dart';
 
 
-enum MaskMode { Add, Subtract, Intersect, Unknown
-
-}
+enum MaskMode { Add, Subtract, Intersect, Unknown }
 
 class Mask {
   final MaskMode _mode;
@@ -27,3 +25,4 @@ class Mask {
   }
 
 }
+
