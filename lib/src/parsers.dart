@@ -1,4 +1,3 @@
-
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:flutter/material.dart' show Color, Colors;
@@ -24,7 +23,18 @@ class IntParser implements Parser<int> {
   const IntParser();
 
   @override
-  int parse(dynamic map, double scale) => map == null ? 100 : map * scale;
+  int parse(dynamic map, double scale) {
+
+    num value = 0.0;
+
+    if(map is List && map.isNotEmpty) {
+      value = map[0];
+    } else if(map is int || map is double){
+      value = map;
+    }
+
+    return (value * scale).toInt();
+  }
 }
 
 class DoubleParser implements Parser<double> {
@@ -131,7 +141,7 @@ class ShapeDataParser implements Parser<ShapeData> {
     PointF initialPoint = _vertexAtIndex(0, points).scaleXY(scale);
     List<CubicCurveData> curves = new List<CubicCurveData>(points.length);
 
-    for(int i = 1; i < points.length; i++) {
+    for (int i = 1; i < points.length; i++) {
       PointF vertex = _vertexAtIndex(i, points);
       PointF previousVertex = _vertexAtIndex(i - 1, points);
       PointF cp1 = _vertexAtIndex(i - 1, outTangents);
@@ -142,7 +152,7 @@ class ShapeDataParser implements Parser<ShapeData> {
       curves.add(new CubicCurveData(shapeCp1, shapeCp2, scaleVertex));
     }
 
-    if(closed) {
+    if (closed) {
       PointF vertex = _vertexAtIndex(0, points);
       PointF previousVertex = _vertexAtIndex(points.length, points);
       PointF cp1 = _vertexAtIndex(points.length - 1, outTangents);

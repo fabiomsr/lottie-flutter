@@ -242,8 +242,13 @@ class AnimatableValueParser<T> {
 
   T _parseInitialValue(dynamic map, List<Keyframe<T>> keyframes,
       Parser<T> parser, scale) {
-    return keyframes.isNotEmpty ? keyframes.first.startValue : parser.parse(
-        map == null ? null : map['k'], scale);
+    if(keyframes.isNotEmpty) {
+      return keyframes.first.startValue;
+    }
+
+    var rawInitialValue =  map == null ? null : map['k'];
+
+    return parser.parse( rawInitialValue, scale);
   }
 
 }
