@@ -50,10 +50,10 @@ class Keyframe<T> {
       _endValue = _startValue;
       _curve = Curves.linear;
     } else if (map.containsKey('o')) {
-      final double x1 = _clamp(map['o']['x'] * scale) / scale;
-      final double y1 = _clamp(map['o']['y'] * scale) / scale;
-      final double x2 = _clamp(map['i']['x'] * scale) / scale;
-      final double y2 = _clamp(map['i']['y'] * scale) / scale;
+      final double x1 = _clamp(parseMapToDouble(map['o']['x']) * scale) / scale;
+      final double y1 = _clamp(parseMapToDouble(map['o']['y']) * scale) / scale;
+      final double x2 = _clamp(parseMapToDouble(map['i']['x']) * scale) / scale;
+      final double y2 = _clamp(parseMapToDouble(map['i']['y']) * scale) / scale;
       _curve = new Cubic(x1, y1, x2, y2);
     } else {
       _curve = Curves.linear;

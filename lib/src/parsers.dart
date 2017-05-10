@@ -18,30 +18,32 @@ abstract class Parser<V> {
   V parse(dynamic map, double scale);
 }
 
+double parseMapToDouble(dynamic map) {
+  double value = 0.0;
+
+  if(map is List && map.isNotEmpty) {
+    value = map[0] is int ? map[0].toDouble() : map[0];
+  } else if(map is int){
+    value = map.toDouble();
+  } else if(map is double){
+    value = map;
+  }
+
+  return value;
+}
 
 class IntParser implements Parser<int> {
   const IntParser();
 
   @override
-  int parse(dynamic map, double scale) {
-
-    num value = 0.0;
-
-    if(map is List && map.isNotEmpty) {
-      value = map[0];
-    } else if(map is int || map is double){
-      value = map;
-    }
-
-    return (value * scale).toInt();
-  }
+  int parse(dynamic map, double scale) => (parseMapToDouble(map) * scale).toInt();
 }
 
 class DoubleParser implements Parser<double> {
   const DoubleParser();
 
   @override
-  double parse(dynamic map, double scale) => map == null ? 0.0 : map * scale;
+  double parse(dynamic map, double scale) => parseMapToDouble(map) * scale;
 }
 
 class PointFParser implements Parser<PointF> {
