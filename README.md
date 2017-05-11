@@ -1,3 +1,3 @@
-[![Travis](https://img.shields.io/travis/fabiomsr/lottie-flutter.svg)]()
+[![Build Status](https://travis-ci.org/fabiomsr/lottie-flutter.svg?branch=master)](https://travis-ci.org/fabiomsr/lottie-flutter)
 
 # lottie-flutter
