@@ -61,7 +61,8 @@ class PointFParser implements Parser<PointF> {
     }
 
     if (json is Map) {
-      return new PointF(json['x'] * scale, json['y'] * scale);
+      return new PointF(parseMapToDouble(json['x']) * scale,
+          parseMapToDouble(json['y']) * scale);
     }
 
     throw new ArgumentError.value(json, "json", "Unable to parse point");
