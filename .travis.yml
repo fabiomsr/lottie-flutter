@@ -20,6 +20,8 @@ addons:
     packages:
       - libstdc++6
       - fonts-droid
+install:
+  - gem install coveralls-lcov
 before_script:
   - wget http://services.gradle.org/distributions/gradle-2.14.1-bin.zip
   - unzip -qq gradle-2.14.1-bin.zip
@@ -34,7 +36,9 @@ before_script:
 #  - adb shell input keyevent 82 &
   - ./flutter/bin/flutter doctor
 script:
-  - ./flutter/bin/flutter test
+  - ./flutter/bin/flutter test --coverage
+after_success:
+  - coveralls-lcov coverage/lcov.info
 
 cache:
   directories:
