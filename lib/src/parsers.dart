@@ -21,11 +21,11 @@ abstract class Parser<V> {
 double parseMapToDouble(dynamic map) {
   double value = 0.0;
 
-  if(map is List && map.isNotEmpty) {
+  if (map is List && map.isNotEmpty) {
     value = map[0] is int ? map[0].toDouble() : map[0];
-  } else if(map is int){
+  } else if (map is int) {
     value = map.toDouble();
-  } else if(map is double){
+  } else if (map is double) {
     value = map;
   }
 
@@ -36,7 +36,8 @@ class IntParser implements Parser<int> {
   const IntParser();
 
   @override
-  int parse(dynamic map, double scale) => (parseMapToDouble(map) * scale).toInt();
+  int parse(dynamic map, double scale) =>
+      (parseMapToDouble(map) * scale).toInt();
 }
 
 class DoubleParser implements Parser<double> {
@@ -74,10 +75,8 @@ class ScaleParser implements Parser<PointF> {
   const ScaleParser();
 
   @override
-  PointF parse(dynamic list, double scale) {
-    return new PointF(list[0] / 100.0 * scale, list[1] / 100.0 * scale);
-  }
-
+  PointF parse(dynamic list, double scale) =>
+      new PointF(list[0] / 100.0 * scale, list[1] / 100.0 * scale);
 }
 
 
@@ -90,18 +89,24 @@ class ColorParser implements Parser<Color> {
       return Colors.black;
     }
 
+
+
     bool shouldUse255 = true;
-    for (double colorChannel in map) {
+    List<double> rawColors = [];
+    for(int i = 0; i < 4; i++ ) {
+      double colorChannel = map[i] is int ? map[i].toDouble() : map[i];
       if (colorChannel > 1) {
         shouldUse255 = false;
       }
+      rawColors.add(colorChannel);
     }
 
     final double multiplier = shouldUse255 ? 255.0 : 1.0;
-    final int alpha = map[3] * multiplier;
-    final int red = map[0] * multiplier;
-    final int green = map[1] * multiplier;
-    final int blue = map[2] * multiplier;
+    final int alpha = (map[3] * multiplier).toInt();
+    final int red = (map[0] * multiplier).toInt();
+    final int green = (map[1] * multiplier).toInt();
+    final int blue = (map[2] * multiplier).toInt();
+
     return new Color.fromARGB(alpha, red, green, blue);
   }
 }
