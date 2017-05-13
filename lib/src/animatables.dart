@@ -3,7 +3,7 @@ import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
 import 'package:Lotie_Flutter/src/parsers.dart';
-import 'package:flutter/painting.dart' show Color;
+import 'package:flutter/painting.dart' show Color, Offset;
 
 abstract class AnimatableValue<A> {
   BaseKeyframeAnimation<dynamic, A> createAnimation();
@@ -111,16 +111,16 @@ class AnimatableGradientColorValue
 //
 //  Point
 //
-class AnimatablePointValue extends BaseAnimatableValue<PointF, PointF> {
+class AnimatablePointValue extends BaseAnimatableValue<Offset, Offset> {
 
-  static final AnimatableValueParser _parser = new AnimatableValueParser<PointF>();
+  static final AnimatableValueParser _parser = new AnimatableValueParser<Offset>();
 
   AnimatablePointValue.fromMap(dynamic map, double scale)
       : super.fromKeyframeGroup(_parser.parse(map, Parsers.pointFParser, scale));
 
 
   @override
-  KeyframeAnimation<PointF> createAnimation() {
+  KeyframeAnimation<Offset> createAnimation() {
     return hasAnimation ? new PointKeyframeAnimation(scene)
         : new StaticKeyframeAnimation(initialValue);
   }
@@ -131,18 +131,18 @@ class AnimatablePointValue extends BaseAnimatableValue<PointF, PointF> {
 //
 //  Scale
 //
-class AnimatableScaleValue extends BaseAnimatableValue<PointF, PointF> {
+class AnimatableScaleValue extends BaseAnimatableValue<Offset, Offset> {
 
-  static final AnimatableValueParser _parser = new AnimatableValueParser<PointF>();
+  static final AnimatableValueParser _parser = new AnimatableValueParser<Offset>();
 
-  AnimatableScaleValue() : super(new PointF(), new Scene.empty());
+  AnimatableScaleValue() : super(Offset.zero, new Scene.empty());
 
   AnimatableScaleValue.fromMap(dynamic map)
       : super.fromKeyframeGroup(_parser.parse(map, Parsers.scaleParser, 1.0));
 
 
   @override
-  KeyframeAnimation<PointF> createAnimation() {
+  KeyframeAnimation<Offset> createAnimation() {
     return hasAnimation ? new ScaleKeyframeAnimation(scene)
         : new StaticKeyframeAnimation(initialValue);
   }
@@ -170,10 +170,10 @@ class AnimatableShapeValue extends BaseAnimatableValue<ShapeData, Path> {
 //
 //  Path
 //
-class AnimatablePathValue extends BaseAnimatableValue<PointF, PointF> {
+class AnimatablePathValue extends BaseAnimatableValue<Offset, Offset> {
 
-  AnimatablePathValue._([PointF initialValue, Scene scene])
-      : super(initialValue == null ? const PointF(0.0, 0.0) : initialValue, scene);
+  AnimatablePathValue._([Offset initialValue, Scene scene])
+      : super(initialValue == null ? const Offset(0.0, 0.0) : initialValue, scene);
 
 
   factory AnimatablePathValue([dynamic map, double scale]) {
@@ -183,7 +183,7 @@ class AnimatablePathValue extends BaseAnimatableValue<PointF, PointF> {
 
     if(hasKeyframes(map)) {
       List rawKeyframes = map as List;
-      List<Keyframe<PointF>> keyframes = rawKeyframes
+      List<Keyframe<Offset>> keyframes = rawKeyframes
           .map((rawKeyframe) => new PathKeyframe.fromMap(rawKeyframe, scale))
           .toList();
 
@@ -196,7 +196,7 @@ class AnimatablePathValue extends BaseAnimatableValue<PointF, PointF> {
   }
 
   @override
-  KeyframeAnimation<PointF> createAnimation() {
+  KeyframeAnimation<Offset> createAnimation() {
     return hasAnimation ? new PathKeyframeAnimation(scene) :
     new StaticKeyframeAnimation(initialValue);
   }
@@ -206,7 +206,7 @@ class AnimatablePathValue extends BaseAnimatableValue<PointF, PointF> {
 //
 //  Split Dimension
 //
-class AnimatableSplitDimensionValue implements AnimatableValue<PointF> {
+class AnimatableSplitDimensionValue implements AnimatableValue<Offset> {
 
   final AnimatableDoubleValue _animatableXDimension;
   final AnimatableDoubleValue _animatableYDimension;
@@ -215,7 +215,7 @@ class AnimatableSplitDimensionValue implements AnimatableValue<PointF> {
       this._animatableYDimension);
 
   @override
-  BaseKeyframeAnimation<dynamic, PointF> createAnimation() {
+  BaseKeyframeAnimation<dynamic, Offset> createAnimation() {
     return new SplitDimensionPathKeyframeAnimation(
         _animatableXDimension.createAnimation(),
         _animatableYDimension.createAnimation());

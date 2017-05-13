@@ -1,5 +1,6 @@
 import 'package:Lotie_Flutter/src/animatables.dart';
 import 'package:Lotie_Flutter/src/values.dart';
+import 'package:flutter/painting.dart' show Offset;
 
 abstract class Shape {
 
@@ -72,14 +73,14 @@ class MergePaths extends Shape {
 
 class AnimatableTransform extends Shape {
   final AnimatablePathValue _anchorPoint;
-  final AnimatableValue<PointF> _position;
+  final AnimatableValue<Offset> _position;
   final AnimatableScaleValue _scale;
   final AnimatableDoubleValue _rotation;
   final AnimatableIntegerValue _opacity;
 
   AnimatablePathValue get anchorPoint => _anchorPoint;
 
-  AnimatableValue<PointF> get position => _position;
+  AnimatableValue<Offset> get position => _position;
 
   AnimatableScaleValue get scale => _scale;
 
@@ -99,7 +100,7 @@ class AnimatableTransform extends Shape {
     }
 
     AnimatablePathValue anchorPointTransform;
-    AnimatableValue<PointF> positionTransform;
+    AnimatableValue<Offset> positionTransform;
     AnimatableScaleValue scaleTransform;
     AnimatableDoubleValue rotationTransform;
     AnimatableIntegerValue opacityTransform;

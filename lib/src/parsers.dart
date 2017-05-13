@@ -1,6 +1,6 @@
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
-import 'package:flutter/material.dart' show Color, Colors;
+import 'package:flutter/painting.dart' show Color, Offset;
 
 
 class Parsers {
@@ -47,22 +47,22 @@ class DoubleParser implements Parser<double> {
   double parse(dynamic map, double scale) => parseMapToDouble(map) * scale;
 }
 
-class PointFParser implements Parser<PointF> {
+class PointFParser implements Parser<Offset> {
 
   const PointFParser();
 
   @override
-  PointF parse(dynamic json, double scale) {
+  Offset parse(dynamic json, double scale) {
     if (json == null) {
       return null;
     }
 
     if (json is List && json.length >= 2) {
-      return new PointF(json[0] * scale, json[1] * scale);
+      return new Offset(json[0] * scale, json[1] * scale);
     }
 
     if (json is Map) {
-      return new PointF(parseMapToDouble(json['x']) * scale,
+      return new Offset(parseMapToDouble(json['x']) * scale,
           parseMapToDouble(json['y']) * scale);
     }
 
@@ -70,13 +70,13 @@ class PointFParser implements Parser<PointF> {
   }
 }
 
-class ScaleParser implements Parser<PointF> {
+class ScaleParser implements Parser<Offset> {
 
   const ScaleParser();
 
   @override
-  PointF parse(dynamic list, double scale) =>
-      new PointF(list[0] / 100.0 * scale, list[1] / 100.0 * scale);
+  Offset parse(dynamic list, double scale) =>
+      new Offset(list[0] / 100.0 * scale, list[1] / 100.0 * scale);
 }
 
 
@@ -86,7 +86,7 @@ class ColorParser implements Parser<Color> {
 
   Color parse(dynamic map, double scale) {
     if (map == null || map.length != 4) {
-      return Colors.black;
+      return const Color(0x0);
     }
 
 
@@ -143,40 +143,43 @@ class ShapeDataParser implements Parser<ShapeData> {
       throw new StateError(
           "Unable to process points array or tangets. $pointsData");
     } else if (points.isEmpty) {
-      return new ShapeData(new List(0), new PointF(), false);
+      return new ShapeData(const [], Offset.zero, false);
     }
 
-    PointF initialPoint = _vertexAtIndex(0, points).scaleXY(scale);
-    List<CubicCurveData> curves = new List<CubicCurveData>(points.length);
+    Offset initialPoint = _vertexAtIndex(0, points).scale(scale, scale);
+    List<CubicCurveData> curves = new List<CubicCurveData>(closed ? points.length
+                                                                  : points.length - 1);
 
     for (int i = 1; i < points.length; i++) {
-      PointF vertex = _vertexAtIndex(i, points);
-      PointF previousVertex = _vertexAtIndex(i - 1, points);
-      PointF cp1 = _vertexAtIndex(i - 1, outTangents);
-      PointF cp2 = _vertexAtIndex(i, inTangents);
-      PointF shapeCp1 = (previousVertex + cp1).scale(scale, scale);
-      PointF shapeCp2 = (vertex + cp2).scale(scale, scale);
-      PointF scaleVertex = vertex.scaleXY(scale);
-      curves.add(new CubicCurveData(shapeCp1, shapeCp2, scaleVertex));
+      Offset vertex = _vertexAtIndex(i, points);
+      Offset previousVertex = _vertexAtIndex(i - 1, points);
+      Offset cp1 = _vertexAtIndex(i - 1, outTangents);
+      Offset cp2 = _vertexAtIndex(i, inTangents);
+      Offset shapeCp1 = (previousVertex + cp1).scale(scale, scale);
+      Offset shapeCp2 = (vertex + cp2).scale(scale, scale);
+      Offset scaleVertex = vertex.scale(scale, scale);
+
+      curves[i - 1] = new CubicCurveData(shapeCp1, shapeCp2, scaleVertex);
     }
 
     if (closed) {
-      PointF vertex = _vertexAtIndex(0, points);
-      PointF previousVertex = _vertexAtIndex(points.length, points);
-      PointF cp1 = _vertexAtIndex(points.length - 1, outTangents);
-      PointF cp2 = _vertexAtIndex(0, inTangents);
+      Offset vertex = _vertexAtIndex(0, points);
+      Offset previousVertex = _vertexAtIndex(points.length - 1, points);
+      Offset cp1 = _vertexAtIndex(points.length - 1, outTangents);
+      Offset cp2 = _vertexAtIndex(0, inTangents);
 
-      PointF shape1 = (previousVertex + cp1).scale(scale, scale);
-      PointF shape2 = (vertex + cp2).scale(scale, scale);
-      PointF scaleVertex = vertex.scaleXY(scale);
-      curves.add(new CubicCurveData(shape1, shape2, scaleVertex));
+      Offset shape1 = (previousVertex + cp1).scale(scale, scale);
+      Offset shape2 = (vertex + cp2).scale(scale, scale);
+      Offset scaleVertex = vertex.scale(scale, scale);
+      curves[curves.length - 1] = new CubicCurveData(shape1, shape2, scaleVertex);
     }
 
-    return new ShapeData(curves, initialPoint, closed);
+    return  new ShapeData(curves, initialPoint, closed);
   }
 
-  PointF _vertexAtIndex(int index, List points) {
-    return new PointF(points[index][0], points[index][1]);
+  Offset _vertexAtIndex(int index, List points) {
+    return new Offset(parseMapToDouble(points[index][0]),
+                      parseMapToDouble(points[index][1]));
   }
 }
 
@@ -209,13 +212,13 @@ class GradientColorParser extends Parser<GradientColor> {
           "gradients.");
     }
 
-    for (int i = 0; i < _colorPoints * 4; i += 4) {
+    for (int i = 0; i < rawGradientColor.length; i += 4) {
       int colorIndex = i ~/ 4;
       positions[colorIndex] = rawGradientColor[i];
       colors[colorIndex] = new Color.fromARGB(255,
-          rawGradientColor[i + 1] * 255,
-          rawGradientColor[i + 2] * 255,
-          rawGradientColor[i + 3] * 255);
+          (parseMapToDouble(rawGradientColor[i + 1]) * 255).toInt(),
+          (parseMapToDouble(rawGradientColor[i + 2] * 255)).toInt(),
+          (parseMapToDouble(rawGradientColor[i + 3] * 255)).toInt());
     }
 
     _addOpacityStopsToGradientIfNeeded(gradientColor, rawGradientColor);

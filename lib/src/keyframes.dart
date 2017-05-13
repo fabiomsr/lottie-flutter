@@ -1,9 +1,10 @@
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/parsers.dart';
 import 'package:flutter/animation.dart' show Curve, Curves, Cubic;
+import 'package:flutter/painting.dart' show Offset;
 
 class Keyframe<T> {
-  static const int MAX_CP_VALUE = 100;
+  static const double MAX_CP_VALUE = 100.0;
 
   int _startFrame;
   int _endFrame;
@@ -50,17 +51,17 @@ class Keyframe<T> {
       _endValue = _startValue;
       _curve = Curves.linear;
     } else if (map.containsKey('o')) {
-      final double x1 = _clamp(parseMapToDouble(map['o']['x']) * scale) / scale;
-      final double y1 = _clamp(parseMapToDouble(map['o']['y']) * scale) / scale;
-      final double x2 = _clamp(parseMapToDouble(map['i']['x']) * scale) / scale;
-      final double y2 = _clamp(parseMapToDouble(map['i']['y']) * scale) / scale;
+      final double x1 = _clamp(map['o']['x'], -scale, scale) / scale;
+      final double y1 = _clamp(map['o']['y'], -MAX_CP_VALUE, MAX_CP_VALUE) / scale;
+      final double x2 = _clamp(map['i']['x'], -scale, scale) / scale;
+      final double y2 = _clamp(map['i']['y'], -MAX_CP_VALUE, MAX_CP_VALUE) / scale;
       _curve = new Cubic(x1, y1, x2, y2);
     } else {
       _curve = Curves.linear;
     }
   }
 
-  double _clamp(num value) => value.clamp(-MAX_CP_VALUE, MAX_CP_VALUE);
+  double _clamp(dynamic value, double min, double max) => parseMapToDouble(value).clamp(min, max);
 
   @override
   String toString() {
@@ -73,24 +74,24 @@ class Keyframe<T> {
 }
 
 
-class PathKeyframe extends Keyframe<PointF> {
+class PathKeyframe extends Keyframe<Offset> {
 
   Path _path;
 
   Path get path => _path;
 
   PathKeyframe(int startFrame, int endFrame, double durationFrames,
-      PointF startValue, PointF endValue)
+      Offset startValue, Offset endValue)
       : super(startFrame, endFrame, durationFrames, startValue, endValue);
 
   PathKeyframe.fromMap(dynamic map, double scale) {
-    Keyframe<PointF> keyframe = new Keyframe.fromMap(
+    Keyframe<Offset> keyframe = new Keyframe.fromMap(
         map, Parsers.pointFParser, scale);
-    PointF cp1 = Parsers.pointFParser.parse(map['ti'], scale);
-    PointF cp2 = Parsers.pointFParser.parse(map['to'], scale);
+    Offset cp1 = Parsers.pointFParser.parse(map['ti'], scale);
+    Offset cp2 = Parsers.pointFParser.parse(map['to'], scale);
 
     bool equals = keyframe.endValue != null && keyframe.startValue != null &&
-        keyframe.endValue.x == keyframe.endValue.y;
+        keyframe.endValue.dx == keyframe.endValue.dy;
     if (!equals) {
       _path = new Path(keyframe.startValue, keyframe.startValue, cp1, cp2);
     }

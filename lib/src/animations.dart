@@ -1,7 +1,8 @@
+
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
-import 'package:flutter/painting.dart' show Color;
+import 'package:flutter/painting.dart' show Color, Offset;
 import 'package:meta/meta.dart';
 
 typedef OnValueChanged();
@@ -176,36 +177,36 @@ class GradientColorKeyframeAnimation extends KeyframeAnimation<GradientColor>{
 }
 
 
-class PointKeyframeAnimation extends KeyframeAnimation<PointF>{
+class PointKeyframeAnimation extends KeyframeAnimation<Offset>{
 
-  PointKeyframeAnimation(Scene<PointF> scene) : super(scene);
+  PointKeyframeAnimation(Scene<Offset> scene) : super(scene);
 
   @override
-  PointF getValue(Keyframe<PointF> keyframe, double keyframeProgress) {
+  Offset getValue(Keyframe<Offset> keyframe, double keyframeProgress) {
     checkKeyframe(keyframe);
 
-    PointF startPoint = keyframe.startValue;
-    PointF endPoint = keyframe.endValue;
+    Offset startPoint = keyframe.startValue;
+    Offset endPoint = keyframe.endValue;
 
-    return new PointF(startPoint.x + keyframeProgress * (endPoint.x - startPoint.x),
-        startPoint.y + keyframeProgress * (endPoint.y - startPoint.y));
+    return new Offset(startPoint.dx + keyframeProgress * (endPoint.dx - startPoint.dx),
+        startPoint.dy + keyframeProgress * (endPoint.dy - startPoint.dy));
   }
 }
 
 
-class ScaleKeyframeAnimation extends KeyframeAnimation<PointF> {
+class ScaleKeyframeAnimation extends KeyframeAnimation<Offset> {
 
-  ScaleKeyframeAnimation(Scene<PointF> scene) : super(scene);
+  ScaleKeyframeAnimation(Scene<Offset> scene) : super(scene);
 
   @override
-  PointF getValue(Keyframe<PointF> keyframe, double keyframeProgress) {
+  Offset getValue(Keyframe<Offset> keyframe, double keyframeProgress) {
     checkKeyframe(keyframe);
 
-    PointF startTransform = keyframe.startValue;
-    PointF endTransform = keyframe.endValue;
+    Offset startTransform = keyframe.startValue;
+    Offset endTransform = keyframe.endValue;
 
-    return new PointF(lerp(startTransform.x, endTransform.x, keyframeProgress),
-        lerp(startTransform.y, endTransform.y, keyframeProgress));
+    return new Offset(lerp(startTransform.dx, endTransform.dx, keyframeProgress),
+        lerp(startTransform.dy, endTransform.dy, keyframeProgress));
 
   }
 }
@@ -224,15 +225,15 @@ class ShapeKeyframeAnimation extends BaseKeyframeAnimation<ShapeData, Path> {
 }
 
 
-class PathKeyframeAnimation extends KeyframeAnimation<PointF> {
+class PathKeyframeAnimation extends KeyframeAnimation<Offset> {
 
   PathKeyframe _pathMeasureKeyframe;
   //PathMeasure _pathMeasure;
 
-  PathKeyframeAnimation(Scene<PointF> scene) : super(scene);
+  PathKeyframeAnimation(Scene<Offset> scene) : super(scene);
 
   @override
-  PointF getValue(Keyframe<PointF> keyframe, double keyframeProgress) {
+  Offset getValue(Keyframe<Offset> keyframe, double keyframeProgress) {
     PathKeyframe _pathKeyframe = keyframe;
 
     if(_pathKeyframe.path == null) {
@@ -249,12 +250,12 @@ class PathKeyframeAnimation extends KeyframeAnimation<PointF> {
     //pathMeasure.getPosTan(keyframeProgress * pathMeasure.length, pos, null);
     //point.set(pos[0],pos[1]);
     //return point;
-    return const PointF(0.0, 0.0);
+    return const Offset(0.0, 0.0);
   }
 }
 
 
-class SplitDimensionPathKeyframeAnimation extends KeyframeAnimation<PointF> {
+class SplitDimensionPathKeyframeAnimation extends KeyframeAnimation<Offset> {
   final KeyframeAnimation<double> xAnimation;
   final KeyframeAnimation<double> yAnimation;
 
@@ -271,8 +272,8 @@ class SplitDimensionPathKeyframeAnimation extends KeyframeAnimation<PointF> {
 
 
   @override
-  PointF getValue(Keyframe<PointF> keyframe, double keyframeProgress) {
-    return new PointF(xAnimation.value, yAnimation.value);
+  Offset getValue(Keyframe<Offset> keyframe, double keyframeProgress) {
+    return new Offset(xAnimation.value, yAnimation.value);
   }
 }
 
