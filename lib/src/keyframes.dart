@@ -1,7 +1,7 @@
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/parsers.dart';
 import 'package:flutter/animation.dart' show Curve, Curves, Cubic;
-import 'package:flutter/painting.dart' show Offset;
+import 'package:flutter/painting.dart' show Offset, Path;
 
 class Keyframe<T> {
   static const double MAX_CP_VALUE = 100.0;
@@ -93,8 +93,24 @@ class PathKeyframe extends Keyframe<Offset> {
     bool equals = keyframe.endValue != null && keyframe.startValue != null &&
         keyframe.endValue.dx == keyframe.endValue.dy;
     if (!equals) {
-      _path = new Path(keyframe.startValue, keyframe.startValue, cp1, cp2);
+      _path = createPath(keyframe.startValue, keyframe.startValue, cp1, cp2);
     }
+  }
+
+  Path createPath (Offset start, Offset end, Offset cp1, Offset cp2) {
+    Path path = new Path();
+    path.moveTo(start.dx, start.dy);
+
+    if (cp1 != null && cp2 != null &&
+        (cp1.distance != 0 || cp2.distance != 0)) {
+      path.cubicTo(start.dx + cp1.dx, start.dy + cp1.dy,
+          end.dx + cp2.dx, end.dy + cp2.dy,
+          end.dx, end.dy);
+    } else {
+      path.lineTo(end.dx, end.dy);
+    }
+
+    return path;
   }
 
 }
@@ -115,11 +131,13 @@ class Scene<T> {
   bool get hasAnimation => _keyframes.isNotEmpty;
 
 
-  Scene(this._keyframes) {
-    _joinKeyframes();
+  Scene(this._keyframes, [bool join = true]) {
+    if(join) {
+      _joinKeyframes();
+    }
   }
 
-  Scene.empty() : this._keyframes = const [];
+  const Scene.empty() : this._keyframes = const [];
 
   Scene.fromMap(dynamic map, Parser<T> parser, scale)
       : _keyframes = parseKeyframes(map, parser, scale){

@@ -2,8 +2,10 @@ import 'package:Lotie_Flutter/src/keyframes.dart';
 import 'package:Lotie_Flutter/src/painting.dart';
 
 import 'package:Lotie_Flutter/src/shapes.dart';
+import 'package:Lotie_Flutter/src/transform.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:flutter/painting.dart' show Color;
+import 'package:flutter/rendering.dart';
 
 
 enum LayerType { PreComp, Solid, Image, Null, Shape, Text, Unknown }
@@ -22,7 +24,7 @@ class Layer {
   final Color _solidColor;
   final List _shapes;
   final List<Mask> _masks;
-  final List<Keyframe<double>> _inOutKeyframes;
+  final Scene<double> _inOutKeyframes;
   final LayerType _type;
   final MatteType _matteType;
   final AnimatableTransform _transform;
@@ -47,7 +49,9 @@ class Layer {
 
   List get shapes => _shapes;
 
-  List<Keyframe<double>> get inOutKeyframes => _inOutKeyframes;
+  List<Mask> get masks => _masks;
+
+  Scene<double> get inOutKeyframes => _inOutKeyframes;
 
   LayerType get type => _type;
 
@@ -68,7 +72,7 @@ class Layer {
         _solidColor = const Color(0x0),
         _shapes = const [],
         _masks = const [],
-        _inOutKeyframes = const [],
+        _inOutKeyframes = const Scene.empty(),
         _type = LayerType.PreComp,
         _matteType = MatteType.None,
         _transform = new AnimatableTransform();
@@ -134,7 +138,7 @@ class Layer {
         solidColor,
         shapes,
         masks,
-        inOutKeyframes,
+        new Scene(inOutKeyframes, false),
         type,
         matteType,
         transform);
@@ -148,7 +152,6 @@ class Layer {
 
     return [];
   }
-
 
 }
 

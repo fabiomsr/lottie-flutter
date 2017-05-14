@@ -3,7 +3,8 @@ import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
 import 'package:Lotie_Flutter/src/parsers.dart';
-import 'package:flutter/painting.dart' show Color, Offset;
+import 'package:flutter/painting.dart' show Color, Offset, Path;
+import 'package:vector_math/vector_math_64.dart';
 
 abstract class AnimatableValue<A> {
   BaseKeyframeAnimation<dynamic, A> createAnimation();
@@ -162,7 +163,7 @@ class AnimatableShapeValue extends BaseAnimatableValue<ShapeData, Path> {
   @override
   BaseKeyframeAnimation<dynamic, Path> createAnimation() {
     return hasAnimation ? new ShapeKeyframeAnimation(scene) :
-    new StaticKeyframeAnimation(new Path.fromShape(initialValue));
+    new StaticKeyframeAnimation(Parsers.pathParser.parseFromShape(initialValue));
   }
 }
 

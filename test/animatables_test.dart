@@ -3,6 +3,11 @@ import 'package:Lotie_Flutter/src/animatables.dart';
 import 'package:test/test.dart';
 
 void main() {
+
+  ///
+  /// Integer
+  ///
+
   test('animatable integer without keyframes test', () {
     Map map = JSON.decode('{"a":0,"k":200}');
     var animatableValue = new AnimatableIntegerValue.fromMap(map);
@@ -27,6 +32,11 @@ void main() {
     var animatableValue = new AnimatableIntegerValue.fromMap(map);
     _expect(map, animatableValue, 352, 1);
   });
+
+
+  ///
+  /// Double
+  ///
 }
 
 void _expect<T>(dynamic map, BaseAnimatableValue animatableValue, T initialValue,

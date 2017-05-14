@@ -1,6 +1,6 @@
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
-import 'package:flutter/painting.dart' show Color, Offset;
+import 'package:flutter/painting.dart' show Color, Offset, Path;
 
 
 class Parsers {
@@ -11,6 +11,7 @@ class Parsers {
   static const PointFParser pointFParser = const PointFParser();
   static const ScaleParser scaleParser = const ScaleParser();
   static const ShapeDataParser shapeDataParser = const ShapeDataParser();
+  static const PathParser pathParser = const PathParser();
 }
 
 
@@ -270,6 +271,36 @@ class GradientColorParser extends Parser<GradientColor> {
     }
 
     return (255 * opacities[opacities.length - 1]).toInt();
+  }
+
+}
+
+
+class PathParser implements Parser<Path> {
+
+  const PathParser();
+
+  @override
+  Path parse(map, double scale) {
+    return new Path();
+  }
+
+  Path parseFromShape(ShapeData shapeData) {
+    Path path = new Path();
+    Offset initialPoint = shapeData.initialPoint;
+    path.moveTo(initialPoint.dx, initialPoint.dy);
+
+    for (var curve in shapeData.curves) {
+      path.cubicTo(curve.controlPoint1.dx, curve.controlPoint1.dy,
+          curve.controlPoint2.dx, curve.controlPoint2.dy,
+          curve.vertex.dx, curve.vertex.dy);
+    }
+
+    if (shapeData.isClosed) {
+      path.close();
+    }
+
+    return path;
   }
 
 }

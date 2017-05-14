@@ -1,15 +1,16 @@
-
+import 'package:Lotie_Flutter/src/painting.dart' show Mask;
+import 'package:Lotie_Flutter/src/parsers.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
-import 'package:flutter/painting.dart' show Color, Offset;
+import 'package:flutter/painting.dart' show Color, Offset, Path;
 import 'package:meta/meta.dart';
 
 typedef OnValueChanged();
 
 abstract class BaseKeyframeAnimation<K, A> {
 
-  final List<OnValueChanged> listeners = new List();
+  final List<OnValueChanged> _listeners = new List();
   bool isDiscrete = false;
 
   final Scene<K> scene;
@@ -19,45 +20,46 @@ abstract class BaseKeyframeAnimation<K, A> {
 
   BaseKeyframeAnimation(this.scene);
 
-  void addUpdateListener(OnValueChanged listener) {
-    listeners.add(listener);
-  }
+  void addListener(OnValueChanged onValueChanged) =>
+      _listeners.add(onValueChanged);
 
-  double get startDelayProgress => scene.isEmpty ? 0.0 : scene.firstKeyframe.startProgress;
+  double get startDelayProgress =>
+      scene.isEmpty ? 0.0 : scene.firstKeyframe.startProgress;
 
-  double get endProgress => scene.isEmpty ? 1.0 : scene.lastKeyframe.endProgress;
+  double get endProgress =>
+      scene.isEmpty ? 1.0 : scene.lastKeyframe.endProgress;
 
   set progress(double progress) {
-    if(progress < startDelayProgress){
+    if (progress < startDelayProgress) {
       progress = 0.0;
     } else if (progress > endProgress) {
       progress = 1.0;
     }
 
-    if(progress == _progress) {
+    if (progress == _progress) {
       return;
     }
 
     _progress = progress;
 
-    listeners.forEach((it) => it());
+    _listeners.forEach((it) => it());
   }
 
   Keyframe<K> get currentKeyframe {
-    if(scene.isEmpty) {
+    if (scene.isEmpty) {
       throw new StateError("There are no keyframes");
     }
 
-    if(cachedKeyframe != null && cachedKeyframe.containsProgress(_progress)) {
+    if (cachedKeyframe != null && cachedKeyframe.containsProgress(_progress)) {
       return cachedKeyframe;
     }
 
-    if(_progress < scene.firstKeyframe.startProgress) {
+    if (_progress < scene.firstKeyframe.startProgress) {
       return cachedKeyframe = scene.firstKeyframe;
     }
 
     for (var keyframe in scene.keyframes) {
-      if(!keyframe.containsProgress(_progress)) {
+      if (!keyframe.containsProgress(_progress)) {
         cachedKeyframe = keyframe;
       }
     }
@@ -66,13 +68,13 @@ abstract class BaseKeyframeAnimation<K, A> {
   }
 
   double get currentKeyframeProgress {
-    if(isDiscrete) {
+    if (isDiscrete) {
       return 0.0;
     }
 
     final Keyframe keyframe = currentKeyframe;
 
-    if(keyframe.isStatic) {
+    if (keyframe.isStatic) {
       return 0.0;
     }
 
@@ -95,10 +97,10 @@ abstract class BaseKeyframeAnimation<K, A> {
 
 abstract class KeyframeAnimation<T> extends BaseKeyframeAnimation<T, T> {
 
-  KeyframeAnimation(Scene<T> scene): super(scene);
+  KeyframeAnimation(Scene<T> scene) : super(scene);
 
   void checkKeyframe(Keyframe keyframe) {
-    if(keyframe.startValue == null || keyframe.endValue == null) {
+    if (keyframe.startValue == null || keyframe.endValue == null) {
       throw new StateError("Missing values for keyframe.");
     }
   }
@@ -124,13 +126,14 @@ class StaticKeyframeAnimation<T> extends KeyframeAnimation<T> {
 }
 
 
-class IntegerKeyframeAnimation extends KeyframeAnimation<int>{
+class IntegerKeyframeAnimation extends KeyframeAnimation<int> {
   IntegerKeyframeAnimation(Scene<int> scene) : super(scene);
 
   @override
   int getValue(Keyframe<int> keyframe, double keyframeProgress) {
     checkKeyframe(keyframe);
-    return lerpInt(keyframe.startValue, keyframe.endValue, keyframeProgress).toInt();
+    return lerpInt(keyframe.startValue, keyframe.endValue, keyframeProgress)
+        .toInt();
   }
 }
 
@@ -160,8 +163,7 @@ class ColorKeyframeAnimation extends KeyframeAnimation<Color> {
 }
 
 
-
-class GradientColorKeyframeAnimation extends KeyframeAnimation<GradientColor>{
+class GradientColorKeyframeAnimation extends KeyframeAnimation<GradientColor> {
   GradientColor _gradientColor;
 
   GradientColorKeyframeAnimation(Scene<GradientColor> scene) : super(scene) {
@@ -171,13 +173,15 @@ class GradientColorKeyframeAnimation extends KeyframeAnimation<GradientColor>{
   }
 
   @override
-  GradientColor getValue(Keyframe<GradientColor> keyframe, double keyframeProgress) {
-    return _gradientColor..lerpGradients(keyframe.startValue, keyframe.endValue, keyframeProgress);
+  GradientColor getValue(Keyframe<GradientColor> keyframe,
+      double keyframeProgress) {
+    return _gradientColor
+      ..lerpGradients(keyframe.startValue, keyframe.endValue, keyframeProgress);
   }
 }
 
 
-class PointKeyframeAnimation extends KeyframeAnimation<Offset>{
+class PointKeyframeAnimation extends KeyframeAnimation<Offset> {
 
   PointKeyframeAnimation(Scene<Offset> scene) : super(scene);
 
@@ -188,7 +192,8 @@ class PointKeyframeAnimation extends KeyframeAnimation<Offset>{
     Offset startPoint = keyframe.startValue;
     Offset endPoint = keyframe.endValue;
 
-    return new Offset(startPoint.dx + keyframeProgress * (endPoint.dx - startPoint.dx),
+    return new Offset(
+        startPoint.dx + keyframeProgress * (endPoint.dx - startPoint.dx),
         startPoint.dy + keyframeProgress * (endPoint.dy - startPoint.dy));
   }
 }
@@ -205,9 +210,9 @@ class ScaleKeyframeAnimation extends KeyframeAnimation<Offset> {
     Offset startTransform = keyframe.startValue;
     Offset endTransform = keyframe.endValue;
 
-    return new Offset(lerp(startTransform.dx, endTransform.dx, keyframeProgress),
+    return new Offset(
+        lerp(startTransform.dx, endTransform.dx, keyframeProgress),
         lerp(startTransform.dy, endTransform.dy, keyframeProgress));
-
   }
 }
 
@@ -220,7 +225,7 @@ class ShapeKeyframeAnimation extends BaseKeyframeAnimation<ShapeData, Path> {
   Path getValue(Keyframe<ShapeData> keyframe, double keyframeProgress) {
     final shape = new ShapeData.fromInterpolateBetween(
         keyframe.startValue, keyframe.endValue, keyframeProgress);
-    return new Path.fromShape(shape);
+    return Parsers.pathParser.parseFromShape(shape);
   }
 }
 
@@ -228,6 +233,8 @@ class ShapeKeyframeAnimation extends BaseKeyframeAnimation<ShapeData, Path> {
 class PathKeyframeAnimation extends KeyframeAnimation<Offset> {
 
   PathKeyframe _pathMeasureKeyframe;
+
+  // TODO: Open issue about SkPathMeasure
   //PathMeasure _pathMeasure;
 
   PathKeyframeAnimation(Scene<Offset> scene) : super(scene);
@@ -236,13 +243,13 @@ class PathKeyframeAnimation extends KeyframeAnimation<Offset> {
   Offset getValue(Keyframe<Offset> keyframe, double keyframeProgress) {
     PathKeyframe _pathKeyframe = keyframe;
 
-    if(_pathKeyframe.path == null) {
+    if (_pathKeyframe.path == null) {
       return keyframe.startValue;
     }
 
 
     //TODO: No PathMeasure in flutter sdk :(
-    if(_pathKeyframe != _pathKeyframe) {
+    if (_pathKeyframe != _pathKeyframe) {
       // _pathMeasure = new PathMeasure(_pathKeyframe._path, false);
       _pathMeasureKeyframe = keyframe;
     }
@@ -267,7 +274,7 @@ class SplitDimensionPathKeyframeAnimation extends KeyframeAnimation<Offset> {
   set progress(double progress) {
     xAnimation.progress = progress;
     yAnimation.progress = progress;
-    listeners.forEach((listener) => listener());
+    _listeners.forEach((listener) => listener());
   }
 
 
@@ -277,7 +284,20 @@ class SplitDimensionPathKeyframeAnimation extends KeyframeAnimation<Offset> {
   }
 }
 
+class MaskKeyframeAnimation {
+  final List<BaseKeyframeAnimation<dynamic, Path>> _animations;
+  final List<Mask> _masks;
 
+  List<BaseKeyframeAnimation<dynamic, Path>> get animations => _animations;
+
+  List<Mask> get masks => _masks;
+
+  MaskKeyframeAnimation(this._masks) : _animations = new List(_masks.length) {
+    for (int i = 0; i < _masks.length; i++) {
+      _animations[i] = _masks[i].path.createAnimation();
+    }
+  }
+}
 
 
 

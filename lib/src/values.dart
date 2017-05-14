@@ -4,37 +4,37 @@ import 'package:flutter/painting.dart' as paint show Path, Offset, Color;
 import 'package:flutter/painting.dart' show hashValues, hashList;
 
 
-class Path extends paint.Path {
-  Path(paint.Offset start, paint.Offset end, paint.Offset cp1, paint.Offset cp2)
-      : super() {
-    moveTo(start.dx, start.dy);
-
-    if (cp1 != null && cp2 != null &&
-        (cp1.distance != 0 || cp2.distance != 0)) {
-      cubicTo(start.dx + cp1.dx, start.dy + cp1.dy,
-          end.dx + cp2.dx, end.dy + cp2.dy,
-          end.dx, end.dy);
-    } else {
-      lineTo(end.dx, end.dy);
-    }
-  }
-
-  Path.fromShape(ShapeData shapeData) : super() {
-    paint.Offset initialPoint = shapeData.initialPoint;
-    moveTo(initialPoint.dx, initialPoint.dy);
-
-    for (var curve in shapeData.curves) {
-      cubicTo(curve.controlPoint1.dx, curve.controlPoint1.dy,
-          curve.controlPoint2.dx, curve.controlPoint2.dy,
-          curve.vertex.dx, curve.vertex.dy);
-    }
-
-    if (shapeData.isClosed) {
-      close();
-    }
-  }
-
-}
+//class Path extends paint.Path {
+//  Path(paint.Offset start, paint.Offset end, paint.Offset cp1, paint.Offset cp2)
+//      : super() {
+//    moveTo(start.dx, start.dy);
+//
+//    if (cp1 != null && cp2 != null &&
+//        (cp1.distance != 0 || cp2.distance != 0)) {
+//      cubicTo(start.dx + cp1.dx, start.dy + cp1.dy,
+//          end.dx + cp2.dx, end.dy + cp2.dy,
+//          end.dx, end.dy);
+//    } else {
+//      lineTo(end.dx, end.dy);
+//    }
+//  }
+//
+//  Path.fromShape(ShapeData shapeData) : super() {
+//    paint.Offset initialPoint = shapeData.initialPoint;
+//    moveTo(initialPoint.dx, initialPoint.dy);
+//
+//    for (var curve in shapeData.curves) {
+//      cubicTo(curve.controlPoint1.dx, curve.controlPoint1.dy,
+//          curve.controlPoint2.dx, curve.controlPoint2.dy,
+//          curve.vertex.dx, curve.vertex.dy);
+//    }
+//
+//    if (shapeData.isClosed) {
+//      close();
+//    }
+//  }
+//
+//}
 
 
 class CubicCurveData {
