@@ -34,22 +34,3 @@ Shape shapeFromMap(dynamic rawShape, double scale) {
   }
 }
 
-BaseLayer layerForModel(Layer layer, List<Layer> preComposition, double scale) {
-  switch (layer.type) {
-    case LayerType.Shape:
-      return null;
-    case LayerType.PreComp:
-      return null;
-    case LayerType.Solid:
-      return null;
-    case LayerType.Image:
-      return null;
-    case LayerType.Null:
-      return null;
-    case LayerType.Text:
-    case LayerType.Unknown:
-    default: // Do nothing
-      print("Unknown layer type ${layer.type}");
-      return null;
-  }
-}
