@@ -8,11 +8,11 @@ Shape shapeFromMap(dynamic rawShape, double scale) {
     case 'gr':
       return new ShapeGroup.fromMap(rawShape, scale);
     case 'st':
-      return new ShapeStroke.fromMap(rawShape, scale);
+      return new ShapeStroke(rawShape, scale);
     case 'gs':
       return new GradientStroke.fromMap(rawShape, scale);
     case 'fl':
-      return new ShapeFill.fromMap(rawShape, scale);
+      return new ShapeFill(rawShape, scale);
     case 'gf':
       return new GradientFill.fromMap(rawShape, scale);
     case 'tr':

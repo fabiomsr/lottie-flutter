@@ -568,7 +568,7 @@ class CompositionLayer extends BaseLayer {
       final String name = layer.layerModel.name;
       if(layerName == null) {
         layer.addColorFilter(null, null, colorFilter);
-      } else {
+      } else if(name == layerName){
         layer.addColorFilter(layerName, contentName, colorFilter);
       }
     }

@@ -23,7 +23,7 @@ class AnimatableTransform extends Shape {
   AnimatableIntegerValue get opacity => _opacity;
 
   AnimatableTransform._(this._anchorPoint, this._position, this._scale,
-      this._rotation, this._opacity);
+      this._rotation, this._opacity): super('');
 
 
   factory AnimatableTransform([dynamic map, double scale]) {
