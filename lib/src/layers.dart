@@ -1,9 +1,9 @@
+import 'package:Lotie_Flutter/src/elements/groups.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
 import 'package:Lotie_Flutter/src/painting.dart';
 
-import 'package:Lotie_Flutter/src/parsers.dart';
-import 'package:Lotie_Flutter/src/shapes.dart';
-import 'package:Lotie_Flutter/src/transform.dart';
+import 'package:Lotie_Flutter/src/parsers/parsers.dart';
+import 'package:Lotie_Flutter/src/elements/transforms.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:flutter/painting.dart' show Color;
 import 'package:flutter/rendering.dart';
@@ -98,9 +98,9 @@ class Layer {
       return new Layer._empty(preCompWidth, preCompHeight);
     }
 
-    final int rawType = map['ty'];
-    final LayerType type = rawType < LayerType.Unknown.index ? rawType
-        : LayerType.values[rawType];
+    final int rawType = map['ty'] ?? -1;
+    final LayerType type = rawType < LayerType.Unknown.index ? LayerType.values[rawType]
+        : LayerType.Unknown;
 
     double preCompositionWidth = 0.0;
     double preCompositionHeight = 0.0;
@@ -119,14 +119,13 @@ class Layer {
     }
 
     AnimatableTransform transform = new AnimatableTransform(map['ks'], scale);
-    MatteType matteType = MatteType.values[map['tt']];
+    MatteType matteType = MatteType.values[map['tt'] ?? 0];
 
     List<Mask> masks = parseJsonArray(map['masksProperties'],
             (rawMask) => new Mask.fromMap(rawMask, scale));
 
     List<ShapeGroup> shapes = parseJsonArray(map['shapes'],
                  (rawShape) => new ShapeGroup.fromMap(rawShape, scale));
-
 
     List<Keyframe<double>> inOutKeyframes = [];
 

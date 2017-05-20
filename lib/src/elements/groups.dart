@@ -1,18 +1,33 @@
-import 'package:Lotie_Flutter/src/drawing/drawing_layers.dart';
-import 'package:Lotie_Flutter/src/layers.dart';
-import 'package:Lotie_Flutter/src/shapes.dart';
-import 'package:Lotie_Flutter/src/transform.dart';
+import 'package:Lotie_Flutter/src/elements/fills.dart';
+import 'package:Lotie_Flutter/src/elements/paths.dart';
+import 'package:Lotie_Flutter/src/elements/shapes.dart';
+import 'package:Lotie_Flutter/src/elements/strokes.dart';
+import 'package:Lotie_Flutter/src/elements/transforms.dart';
+
+class ShapeGroup extends Shape {
+  final List<Shape> _shapes;
+
+  List<Shape> get shapes => _shapes;
+
+  ShapeGroup.fromMap(dynamic map, double scale)
+      : _shapes = parseRawShapes(map['it'], scale),
+        super.fromMap(map);
+
+  static List<Shape> parseRawShapes(List rawShapes, double scale) =>
+      rawShapes.map((rawShape) => shapeFromMap(rawShape, scale))
+          .toList();
+}
 
 Shape shapeFromMap(dynamic rawShape, double scale) {
   switch (rawShape['ty']) {
     case 'gr':
       return new ShapeGroup.fromMap(rawShape, scale);
     case 'st':
-      return new ShapeStroke(rawShape, scale);
+      return new ShapeStroke.fromMap(rawShape, scale);
     case 'gs':
       return new GradientStroke.fromMap(rawShape, scale);
     case 'fl':
-      return new ShapeFill(rawShape, scale);
+      return new ShapeFill.fromMap(rawShape, scale);
     case 'gf':
       return new GradientFill.fromMap(rawShape, scale);
     case 'tr':

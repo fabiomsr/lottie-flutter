@@ -1,5 +1,5 @@
 import 'package:Lotie_Flutter/src/painting.dart' show Mask;
-import 'package:Lotie_Flutter/src/parsers.dart';
+import 'package:Lotie_Flutter/src/parsers/parsers.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';

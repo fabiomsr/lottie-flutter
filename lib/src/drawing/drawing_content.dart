@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
-import 'package:Lotie_Flutter/src/shapes.dart';
+import 'package:Lotie_Flutter/src/elements/shapes.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class ContentGroup extends DrawingContent{

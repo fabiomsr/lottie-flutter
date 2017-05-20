@@ -1,7 +1,9 @@
 import 'package:Lotie_Flutter/src/animatables.dart';
 import 'package:Lotie_Flutter/src/animations.dart';
+import 'package:Lotie_Flutter/src/elements/shapes.dart';
 import 'package:Lotie_Flutter/src/mathutils.dart';
-import 'package:Lotie_Flutter/src/shapes.dart' show Shape;
+
+import 'package:Lotie_Flutter/src/parsers/element_parsers.dart';
 import 'package:flutter/painting.dart' show Offset;
 import 'package:vector_math/vector_math_64.dart';
 
@@ -23,7 +25,7 @@ class AnimatableTransform extends Shape {
   AnimatableIntegerValue get opacity => _opacity;
 
   AnimatableTransform._(this._anchorPoint, this._position, this._scale,
-      this._rotation, this._opacity): super('');
+      this._rotation, this._opacity): super.fromMap({});
 
 
   factory AnimatableTransform([dynamic map, double scale]) {
@@ -53,18 +55,10 @@ class AnimatableTransform extends Shape {
     }
 
 
-    var rawPosition = map['p'];
-    if (rawPosition is Map) {
-      positionTransform =
-      rawPosition.containsKey('k') ? new AnimatablePathValue(
-          rawPosition['k'], scale) :
-      new AnimatableSplitDimensionValue(
-          new AnimatableDoubleValue.fromMap(rawPosition['x'], scale),
-          new AnimatableDoubleValue.fromMap(rawPosition['y'], scale));
-    } else {
+    positionTransform = parsePathOrSplitDimensionPath(map, scale);
+    if (positionTransform == null) {
       _throwMissingTransform("position");
     }
-
 
     var rawScale = map['s'];
     scaleTransform =

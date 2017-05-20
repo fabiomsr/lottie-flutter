@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:Lotie_Flutter/src/keyframes.dart';
-import 'package:Lotie_Flutter/src/parsers.dart';
+import 'package:Lotie_Flutter/src/parsers/parsers.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:flutter/animation.dart' show Curves, Cubic;
 import 'package:flutter/painting.dart' show Color, Offset;

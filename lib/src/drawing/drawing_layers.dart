@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'dart:ui';
-import 'package:Lotie_Flutter/core/LottieComposition.dart';
 import 'package:Lotie_Flutter/src/animations.dart';
+import 'package:Lotie_Flutter/src/composition.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing_content.dart';
 import 'package:Lotie_Flutter/src/layers.dart';
 import 'package:Lotie_Flutter/src/painting.dart';
-import 'package:Lotie_Flutter/src/transform.dart';
+import 'package:Lotie_Flutter/src/elements/transforms.dart';
 import 'package:flutter/painting.dart';
 
 import 'package:vector_math/vector_math_64.dart';
@@ -285,9 +285,9 @@ abstract class BaseLayer implements DrawingContent {
 
       switch (mask.mode) {
         case MaskMode.Subtract:
-        // TODO: Open issue about PathFillType.inverseWinding
+        // PathFillType.inverseWinding is deprecated https://github.com/flutter/flutter/issues/5912
         //_path.fillType = PathFillType.inverseWinding;
-          print("MaskMode.Subtract is not supported for now");
+          print("MaskMode.Subtract is not supported because PathFillType.inverseWinding is deprecated");
           break;
         case MaskMode.Add:
         default:
@@ -484,8 +484,9 @@ class CompositionLayer extends BaseLayer {
   CompositionLayer(LottieComposition composition, Layer layerModel,
       double scale)
       : super(layerModel) {
+
     List<Layer> layerModels = composition.preComps[layerModel.refId];
-    Map<int, BaseLayer> layers = new Map<int, BaseLayer>();
+    Map<int, BaseLayer> layerMap = new Map<int, BaseLayer>();
 
     for (int i = layerModels.length - 1; i >= 0; i--) {
       Layer currentLayerModel = layerModels[i];
@@ -495,7 +496,7 @@ class CompositionLayer extends BaseLayer {
         continue;
       }
 
-      layers[layer.layerModel.id] = layer;
+      layerMap[layer.layerModel.id] = layer;
 
       if (_matteLayer == null) {
         _matteLayer._matteLayer = layer;
@@ -513,8 +514,8 @@ class CompositionLayer extends BaseLayer {
       }
     }
 
-    layers.forEach((key, currentLayer) {
-      BaseLayer parent = layers[currentLayer.layerModel.parentId];
+    layerMap.forEach((key, currentLayer) {
+      BaseLayer parent = layerMap[currentLayer.layerModel.parentId];
       if (parent != null) {
         currentLayer.parent = parent;
       }

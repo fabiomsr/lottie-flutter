@@ -1,5 +1,5 @@
 import 'package:Lotie_Flutter/src/values.dart';
-import 'package:Lotie_Flutter/src/parsers.dart';
+import 'package:Lotie_Flutter/src/parsers/parsers.dart';
 import 'package:flutter/animation.dart' show Curve, Curves, Cubic;
 import 'package:flutter/painting.dart' show Offset, Path;
 
@@ -44,8 +44,8 @@ class Keyframe<T> {
     }
 
     _startFrame = map['t'];
-    _startValue = parser.parse(map['s'], scale);
-    _endValue = parser.parse(map['e'], scale);
+    _startValue = map.containsKey('s') ?  parser.parse(map['s'], scale) : null;
+    _endValue = map.containsKey('e')  ? parser.parse(map['e'], scale) : null;
 
     if (map['h'] == 1) {
       _endValue = _startValue;
