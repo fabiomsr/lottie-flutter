@@ -1,4 +1,6 @@
 import 'package:Lotie_Flutter/src/animatables.dart';
+import 'package:Lotie_Flutter/src/drawing/animation_drawables.dart';
+import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/parsers/element_parsers.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:flutter/painting.dart';
@@ -10,6 +12,8 @@ abstract class Shape {
   String get name => _name;
 
   Shape.fromMap(dynamic map) : _name = parseName(map);
+
+  AnimationDrawable toDrawable(Repaint repaint) => null;
 }
 
 class CircleShape extends Shape {
@@ -20,6 +24,11 @@ class CircleShape extends Shape {
       : _position = parsePathOrSplitDimensionPath(map, scale),
         _size = parseSize(map, scale),
         super.fromMap(map);
+
+  @override
+  AnimationDrawable toDrawable(Repaint repaint) =>
+      new EllipseDrawable(name, repaint,
+          _size.createAnimation(), _position.createAnimation());
 }
 
 class RectangleShape extends Shape {
@@ -32,6 +41,12 @@ class RectangleShape extends Shape {
         _size = parseSize(map, scale),
         _cornerRadius = new AnimatableDoubleValue.fromMap(map['r'], scale),
         super.fromMap(map);
+
+  @override
+  AnimationDrawable toDrawable(Repaint repaint) =>
+      new RectangleDrawable(
+          name, repaint, _position.createAnimation(), _size.createAnimation(),
+          _cornerRadius.createAnimation());
 }
 
 class PolystarShape extends Shape {

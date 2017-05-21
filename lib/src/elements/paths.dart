@@ -1,4 +1,6 @@
 import 'package:Lotie_Flutter/src/animatables.dart';
+import 'package:Lotie_Flutter/src/drawing/animation_drawables.dart';
+import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/elements/shapes.dart';
 import 'package:Lotie_Flutter/src/parsers/element_parsers.dart';
 import 'package:Lotie_Flutter/src/values.dart';
@@ -26,6 +28,11 @@ class ShapeTrimPath extends Shape {
         _end = new AnimatableDoubleValue.fromMap(map['e'], scale),
         _offset = new AnimatableDoubleValue.fromMap(map['o'], scale),
         super.fromMap(map);
+
+  @override
+  AnimationDrawable toDrawable(Repaint repaint) =>
+      new TrimPathDrawable(name, repaint, _type, _start.createAnimation(),
+          _end.createAnimation(), _offset.createAnimation());
 }
 
 class MergePaths extends Shape {

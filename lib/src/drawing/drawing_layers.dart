@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/composition.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
-import 'package:Lotie_Flutter/src/drawing/drawing_content.dart';
+import 'package:Lotie_Flutter/src/drawing/animation_drawables.dart';
 import 'package:Lotie_Flutter/src/layers.dart';
 import 'package:Lotie_Flutter/src/painting.dart';
 import 'package:Lotie_Flutter/src/elements/transforms.dart';
@@ -13,18 +13,18 @@ import 'package:vector_math/vector_math_64.dart';
 
 
 BaseLayer layerForModel(Layer layer, LottieComposition composition,
-    double scale) {
+    double scale, Repaint repaint) {
   switch (layer.type) {
     case LayerType.Shape:
-      return new ShapeLayer(layer);
+      return new ShapeLayer(layer,repaint);
     case LayerType.PreComp:
-      return new CompositionLayer(composition, layer, scale);
+      return new CompositionLayer(composition, layer, repaint, scale);
     case LayerType.Solid:
-      return new SolidLayer(layer);
+      return new SolidLayer(layer, repaint);
     case LayerType.Image:
-      return new ImageLayer(layer, scale);
+      return new ImageLayer(layer, repaint, scale);
     case LayerType.Null:
-      return new NullLayer(layer);
+      return new NullLayer(layer, repaint);
     case LayerType.Text:
     case LayerType.Unknown:
     default: // Do nothing
@@ -33,7 +33,7 @@ BaseLayer layerForModel(Layer layer, LottieComposition composition,
   }
 }
 
-abstract class BaseLayer implements DrawingContent {
+abstract class BaseLayer implements Drawable {
 
   bool _visibility = true;
   BaseLayer _parent;
@@ -41,6 +41,7 @@ abstract class BaseLayer implements DrawingContent {
   BaseLayer _matteLayer;
   Path _path = new Path();
 
+  final Repaint _repaint;
   final Layer _layerModel;
   final Paint _contentPaint = new Paint();
   final Paint _maskPaint = new Paint();
@@ -79,7 +80,7 @@ abstract class BaseLayer implements DrawingContent {
     _animations.forEach((animation) => animation.progress = progress);
   }
 
-  BaseLayer(this._layerModel)
+  BaseLayer(this._layerModel, this._repaint)
       : _transform = new TransformKeyframeAnimation(_layerModel.transform),
         _mask = new MaskKeyframeAnimation(
             _layerModel.masks == null ? const [] : _layerModel.masks) {
@@ -134,7 +135,7 @@ abstract class BaseLayer implements DrawingContent {
   }
 
   void invalidateSelf() {
-    //TODO: invalidate layer
+    _repaint();
   }
 
   @override
@@ -325,7 +326,7 @@ class SolidLayer extends BaseLayer {
 
   final Paint _paint = new Paint();
 
-  SolidLayer(Layer layerModel) : super(layerModel) {
+  SolidLayer(Layer layerModel, Repaint repaint) : super(layerModel, repaint) {
     _paint.color = layerModel.solidColor;
     _paint.style = PaintingStyle.fill;
   }
@@ -371,9 +372,9 @@ class ShapeLayer extends BaseLayer {
 
   final ContentGroup _contentGroup;
 
-  ShapeLayer(Layer layerModel)
+  ShapeLayer(Layer layerModel, Repaint repaint)
       : _contentGroup = new ContentGroup(layerModel.name, layerModel.shapes),
-        super(layerModel) {
+        super(layerModel, repaint) {
     _contentGroup.setContents(const [], const []);
   }
 
@@ -401,7 +402,7 @@ class ImageLayer extends BaseLayer {
   final Paint _paint = new Paint();
   final double _density;
 
-  ImageLayer(Layer layerModel, this._density) : super(layerModel) {
+  ImageLayer(Layer layerModel, Repaint repaint, this._density) : super(layerModel, repaint) {
     _paint
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.low; // bilinear interpolation
@@ -455,7 +456,7 @@ class ImageLayer extends BaseLayer {
 }
 
 class NullLayer extends BaseLayer {
-  NullLayer(Layer layerModel) : super(layerModel);
+  NullLayer(Layer layerModel, Repaint repaint) : super(layerModel, repaint);
 
   @override
   void addColorFilter(String layerName, String contentName,
@@ -481,16 +482,16 @@ class CompositionLayer extends BaseLayer {
   bool _hasMatte;
   bool _hasMasks;
 
-  CompositionLayer(LottieComposition composition, Layer layerModel,
+  CompositionLayer(LottieComposition composition, Layer layerModel, Repaint repaint,
       double scale)
-      : super(layerModel) {
+      : super(layerModel, repaint) {
 
     List<Layer> layerModels = composition.preComps[layerModel.refId];
     Map<int, BaseLayer> layerMap = new Map<int, BaseLayer>();
 
     for (int i = layerModels.length - 1; i >= 0; i--) {
       Layer currentLayerModel = layerModels[i];
-      BaseLayer layer = layerForModel(currentLayerModel, composition, scale);
+      BaseLayer layer = layerForModel(currentLayerModel, composition, scale, repaint);
 
       if (layer == null) {
         continue;

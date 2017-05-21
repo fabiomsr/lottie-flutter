@@ -5,7 +5,7 @@
 // https://androidstudygroup.slack.com/archives/animation/p1476461064000335
 
 import 'dart:math';
-import 'package:flutter/painting.dart' show Color;
+import 'package:flutter/painting.dart' show Color, Path;
 
 double lerp(double a, double b, double percentage) => a + percentage * (b - a);
 
@@ -83,4 +83,13 @@ class GammaEvaluator {
     // IEC 61966-2-1:1999
     return srgb <= 0.04045 ? srgb / 12.92 : pow((srgb + 0.055) / 1.055, 2.4);
   }
+}
+
+
+Path applyScaleTrimIfNeeded(Path path, double start, double end, double offset) {
+  return applyTrimIfNeeded(path, start / 100.0, end / 100.0, offset / 100.0);
+}
+// TODO: wait for SkPathMeasure
+Path applyTrimIfNeeded(Path path, double start, double end, double offset) {
+  return path;
 }
