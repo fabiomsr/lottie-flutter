@@ -26,12 +26,12 @@ abstract class Stroke extends Shape {
 
   JoinType get jointType => _joinType;
 
-  Stroke.fromMap(dynamic map, double scale)
-      : _opacity = parseOpacity(map),
-        _width = parseWidth(map, scale),
+  Stroke.fromMap(dynamic map, double scale, double durationFrames)
+      : _opacity = parseOpacity(map, durationFrames),
+        _width = parseWidth(map, scale, durationFrames),
         _capType = parseCapType(map),
         _joinType = parseJoinType(map),
-        _lineDashGroup = parseLineDash(map, scale),
+        _lineDashGroup = parseLineDash(map, scale, durationFrames),
         super.fromMap(map);
 }
 
@@ -40,9 +40,9 @@ class ShapeStroke extends Stroke {
 
   AnimatableColorValue get color => _color;
 
-  ShapeStroke.fromMap(dynamic map, double scale)
-      : _color = parseColor(map),
-        super.fromMap(map, scale);
+  ShapeStroke.fromMap(dynamic map, double scale, double durationFrames)
+      : _color = parseColor(map, durationFrames),
+        super.fromMap(map, scale, durationFrames);
 }
 
 class GradientStroke extends Stroke {
@@ -59,11 +59,11 @@ class GradientStroke extends Stroke {
 
   AnimatableGradientColorValue get gradientColor => _gradientColor;
 
-  GradientStroke.fromMap(dynamic map, double scale)
-      : _gradientColor = parseGradient(map),
+  GradientStroke.fromMap(dynamic map, double scale, double durationFrames)
+      : _gradientColor = parseGradient(map, durationFrames),
         _type = parseGradientType(map),
-        _start = parseStartPoint(map, scale),
-        _end = parseEndPoint(map, scale),
-        super.fromMap(map, scale);
+        _start = parseStartPoint(map, scale, durationFrames),
+        _end = parseEndPoint(map, scale, durationFrames),
+        super.fromMap(map, scale, durationFrames);
 }
 

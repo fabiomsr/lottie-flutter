@@ -28,7 +28,7 @@ class AnimatableTransform extends Shape {
       this._rotation, this._opacity): super.fromMap({});
 
 
-  factory AnimatableTransform([dynamic map, double scale]) {
+  factory AnimatableTransform([dynamic map, double scale, double durationFrames]) {
     if (map == null) {
       return new AnimatableTransform._(new AnimatablePathValue(),
           new AnimatablePathValue(), new AnimatableScaleValue(),
@@ -55,21 +55,21 @@ class AnimatableTransform extends Shape {
     }
 
 
-    positionTransform = parsePathOrSplitDimensionPath(map, scale);
+    positionTransform = parsePathOrSplitDimensionPath(map, scale, durationFrames);
     if (positionTransform == null) {
       _throwMissingTransform("position");
     }
 
     var rawScale = map['s'];
     scaleTransform =
-    rawScale is Map ? new AnimatableScaleValue.fromMap(rawScale)
+    rawScale is Map ? new AnimatableScaleValue.fromMap(rawScale, durationFrames)
     // Somehow some community animations don't have scale in the transform
         : new AnimatableScaleValue();
 
 
     var rawRotation = map['r'] ?? map['rz'];
     if (rawRotation is Map) {
-      rotationTransform = new AnimatableDoubleValue.fromMap(rawRotation, scale);
+      rotationTransform = new AnimatableDoubleValue.fromMap(rawRotation, 1.0, durationFrames);
     } else {
       _throwMissingTransform("rotation");
     }
@@ -77,7 +77,7 @@ class AnimatableTransform extends Shape {
     var rawOpacity = map['o'];
     opacityTransform =
     rawOpacity is Map
-        ? new AnimatableIntegerValue.fromMap(rawOpacity)
+        ? new AnimatableIntegerValue.fromMap(rawOpacity, durationFrames)
         : new AnimatableIntegerValue(100);
 
     return new AnimatableTransform._(

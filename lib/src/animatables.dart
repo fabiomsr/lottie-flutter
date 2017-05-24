@@ -38,8 +38,8 @@ class AnimatableIntegerValue extends  BaseAnimatableValue<int, int>{
 
   AnimatableIntegerValue([int initialValue = 100, Scene scene]) : super(initialValue, scene);
 
-  AnimatableIntegerValue.fromMap(dynamic map)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.intParser, 1.0));
+  AnimatableIntegerValue.fromMap(dynamic map, double durationFrames)
+      : super.fromKeyframeGroup(_parser.parse(map, Parsers.intParser, 1.0, durationFrames));
 
   @override
   KeyframeAnimation<int> createAnimation() {
@@ -57,8 +57,8 @@ class AnimatableDoubleValue extends BaseAnimatableValue<double, double> {
 
   AnimatableDoubleValue() : super(0.0, new Scene.empty());
 
-  AnimatableDoubleValue.fromMap(dynamic map, double scale)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.doubleParser, scale));
+  AnimatableDoubleValue.fromMap(dynamic map, double scale, double durationFrames)
+      : super.fromKeyframeGroup(_parser.parse(map, Parsers.doubleParser, scale, durationFrames));
 
   @override
   KeyframeAnimation<double> createAnimation() {
@@ -75,8 +75,8 @@ class AnimatableColorValue extends BaseAnimatableValue<Color, Color> {
 
   static final AnimatableValueParser _parser = new AnimatableValueParser<Color>();
 
-  AnimatableColorValue.fromMap(dynamic map)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.colorParser, 1.0));
+  AnimatableColorValue.fromMap(dynamic map, double durationFrames)
+      : super.fromKeyframeGroup(_parser.parse(map, Parsers.colorParser, 1.0, durationFrames));
 
   @override
   KeyframeAnimation<Color> createAnimation() {
@@ -95,9 +95,9 @@ class AnimatableGradientColorValue
   static final AnimatableValueParser _parser = new AnimatableValueParser<
       GradientColor>();
 
-  AnimatableGradientColorValue.fromMap(dynamic map)
+  AnimatableGradientColorValue.fromMap(dynamic map, double durationFrames)
       : super.fromKeyframeGroup(
-      _parser.parse(map, new GradientColorParser(map['p']), 1.0));
+      _parser.parse(map, new GradientColorParser(map['p']), 1.0, durationFrames));
 
 
   @override
@@ -116,8 +116,8 @@ class AnimatablePointValue extends BaseAnimatableValue<Offset, Offset> {
 
   static final AnimatableValueParser _parser = new AnimatableValueParser<Offset>();
 
-  AnimatablePointValue.fromMap(dynamic map, double scale)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.pointFParser, scale));
+  AnimatablePointValue.fromMap(dynamic map, double scale, double durationFrames)
+      : super.fromKeyframeGroup(_parser.parse(map, Parsers.pointFParser, scale, durationFrames));
 
 
   @override
@@ -138,8 +138,8 @@ class AnimatableScaleValue extends BaseAnimatableValue<Offset, Offset> {
 
   AnimatableScaleValue() : super(Offset.zero, new Scene.empty());
 
-  AnimatableScaleValue.fromMap(dynamic map)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.scaleParser, 1.0));
+  AnimatableScaleValue.fromMap(dynamic map, double durationFrames)
+      : super.fromKeyframeGroup(_parser.parse(map, Parsers.scaleParser, 1.0, durationFrames));
 
 
   @override
@@ -157,8 +157,8 @@ class AnimatableShapeValue extends BaseAnimatableValue<ShapeData, Path> {
 
   static final AnimatableValueParser _parser = new AnimatableValueParser<ShapeData>();
 
-  AnimatableShapeValue.fromMap(dynamic map, double scale)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.shapeDataParser, scale));
+  AnimatableShapeValue.fromMap(dynamic map, double scale, double durationFrames)
+      : super.fromKeyframeGroup(_parser.parse(map, Parsers.shapeDataParser, scale, durationFrames));
 
   @override
   BaseKeyframeAnimation<dynamic, Path> createAnimation() {
@@ -177,7 +177,7 @@ class AnimatablePathValue extends BaseAnimatableValue<Offset, Offset> {
       : super(initialValue == null ? const Offset(0.0, 0.0) : initialValue, scene);
 
 
-  factory AnimatablePathValue([dynamic map, double scale]) {
+  factory AnimatablePathValue([dynamic map, double scale, double durationFrames]) {
     if(map == null) {
       return new AnimatablePathValue();
     }
@@ -185,7 +185,7 @@ class AnimatablePathValue extends BaseAnimatableValue<Offset, Offset> {
     if(hasKeyframes(map)) {
       List rawKeyframes = map as List;
       List<Keyframe<Offset>> keyframes = rawKeyframes
-          .map((rawKeyframe) => new PathKeyframe.fromMap(rawKeyframe, scale))
+          .map((rawKeyframe) => new PathKeyframe.fromMap(rawKeyframe, scale, durationFrames))
           .toList();
 
       Scene scene = new Scene(keyframes);
@@ -231,14 +231,14 @@ class AnimatableSplitDimensionValue implements AnimatableValue<Offset> {
 
 class AnimatableValueParser<T> {
 
-  KeyframeGroup<T> parse(dynamic map, Parser<T> parser, double scale) {
-    Scene scene = _parseKeyframes(map, parser, scale);
+  KeyframeGroup<T> parse(dynamic map, Parser<T> parser, double scale, double durationFrames) {
+    Scene scene = _parseKeyframes(map, parser, scale, durationFrames);
     T initialValue = _parseInitialValue(map, scene.keyframes, parser, scale);
     return new KeyframeGroup(initialValue, scene);
   }
 
-  Scene _parseKeyframes(dynamic map, Parser<T> parser, double scale) {
-    return new Scene.fromMap(map, parser, scale);
+  Scene _parseKeyframes(dynamic map, Parser<T> parser, double scale, double durationFrames) {
+    return new Scene.fromMap(map, parser, scale, durationFrames);
   }
 
   T _parseInitialValue(dynamic map, List<Keyframe<T>> keyframes,

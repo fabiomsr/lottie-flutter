@@ -5,6 +5,7 @@
 // https://androidstudygroup.slack.com/archives/animation/p1476461064000335
 
 import 'dart:math';
+import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:flutter/painting.dart' show Color, Path;
 
 double lerp(double a, double b, double percentage) => a + percentage * (b - a);
@@ -84,6 +85,9 @@ class GammaEvaluator {
     return srgb <= 0.04045 ? srgb / 12.92 : pow((srgb + 0.055) / 1.055, 2.4);
   }
 }
+
+int calculateAlpha(int from, BaseKeyframeAnimation<dynamic, int> opacity) =>
+    ((from / 255.0 * opacity.value / 100.0) * 255.0).toInt();
 
 
 Path applyScaleTrimIfNeeded(Path path, double start, double end, double offset) {

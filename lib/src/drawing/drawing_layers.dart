@@ -7,6 +7,7 @@ import 'package:Lotie_Flutter/src/drawing/animation_drawables.dart';
 import 'package:Lotie_Flutter/src/layers.dart';
 import 'package:Lotie_Flutter/src/painting.dart';
 import 'package:Lotie_Flutter/src/elements/transforms.dart';
+import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:flutter/painting.dart';
 
 import 'package:vector_math/vector_math_64.dart';
@@ -164,7 +165,7 @@ abstract class BaseLayer implements Drawable {
       _matrix.multiply(_parents[i]._transform.matrix);
     }
 
-    int alpha = calculateAlpha(parentAlpha);
+    int alpha = calculateAlpha(parentAlpha, _transform.opacity);
 
     if (!hasMatteOnThisLayer && !hasMasksOnThisLayer) {
       _matrix.multiply(_transform.matrix);
@@ -196,9 +197,6 @@ abstract class BaseLayer implements Drawable {
 
     canvas.restore();
   }
-
-  int calculateAlpha(int from) =>
-      ((from / 255.0 * _transform.opacity.value / 100.0) * 255.0).toInt();
 
 
   void clearCanvas(Canvas canvas, Rect bounds) {
@@ -338,7 +336,7 @@ class SolidLayer extends BaseLayer {
       return;
     }
 
-    int alpha = calculateAlpha(layerModel.solidColor.alpha);
+    int alpha = calculateAlpha(layerModel.solidColor.alpha, _transform.opacity);
     _paint.color = _paint.color.withAlpha(alpha);
 
     if (alpha == 0) {

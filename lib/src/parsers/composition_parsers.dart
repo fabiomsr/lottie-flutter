@@ -61,7 +61,7 @@ List<Layer> parseLayers(List rawLayers, double width, double height,
     double scale, double durationFrames, int endFrame) {
   return rawLayers.map((rawLayer) =>
   new Layer(rawLayer, width, height, scale,
-      durationFrames, endFrame))
+      durationFrames == null ? 0.0 : durationFrames, endFrame))
       .toList();
 }
 

@@ -1,4 +1,5 @@
 import 'package:Lotie_Flutter/src/elements/groups.dart';
+import 'package:Lotie_Flutter/src/elements/shapes.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
 import 'package:Lotie_Flutter/src/painting.dart';
 
@@ -91,15 +92,15 @@ class Layer {
       this._solidColor, this._shapes, this._masks, this._inOutKeyframes,
       this._type, this._matteType, this._transform);
 
-  factory Layer(
-      [dynamic map, double preCompWidth, double preCompHeight,
-        double scale, double durationFrames, int endFrame]) {
+  factory Layer([dynamic map, double preCompWidth, double preCompHeight,
+    double scale, double durationFrames, int endFrame]) {
     if (map == null) {
       return new Layer._empty(preCompWidth, preCompHeight);
     }
 
     final int rawType = map['ty'] ?? -1;
-    final LayerType type = rawType < LayerType.Unknown.index ? LayerType.values[rawType]
+    final LayerType type = rawType < LayerType.Unknown.index ? LayerType
+        .values[rawType]
         : LayerType.Unknown;
 
     double preCompositionWidth = 0.0;
@@ -118,14 +119,15 @@ class Layer {
       solidColor = parseColor(map['sc']);
     }
 
-    AnimatableTransform transform = new AnimatableTransform(map['ks'], scale);
+    AnimatableTransform transform = new AnimatableTransform(map['ks'], scale, durationFrames);
+
     MatteType matteType = MatteType.values[map['tt'] ?? 0];
 
     List<Mask> masks = parseJsonArray(map['masksProperties'],
-            (rawMask) => new Mask.fromMap(rawMask, scale));
+            (rawMask) => new Mask.fromMap(rawMask, scale, durationFrames));
 
-    List<ShapeGroup> shapes = parseJsonArray(map['shapes'],
-                 (rawShape) => new ShapeGroup.fromMap(rawShape, scale));
+    List<Shape> shapes = parseJsonArray(map['shapes'],
+            (rawShape) => shapeFromMap(rawShape, scale, durationFrames));
 
     List<Keyframe<double>> inOutKeyframes = [];
 
@@ -136,7 +138,13 @@ class Layer {
 
     final int outFrame = map['op'] > 0 ? map['op'] : endFrame + 1;
     inOutKeyframes.add(
-        new Keyframe(outFrame, endFrame, durationFrames, 0.0, 0.0));
+        new Keyframe(inFrame, outFrame, durationFrames, 1.0, 1.0));
+
+    if (outFrame <= durationFrames) {
+      Keyframe<double> outKeyframe = new Keyframe(
+          outFrame, endFrame, durationFrames, 0.0, 0.0);
+      inOutKeyframes.add(outKeyframe);
+    }
 
     final double startProgress = parseMapToDouble(map['st']) / durationFrames;
 
@@ -169,6 +177,16 @@ class Layer {
     return [];
   }
 
+  @override
+  String toString() {
+    return '{"_id: $_id, "_parentId": $_parentId, "_solidWidth": $_solidWidth, '
+        '"_solidHeight": $_solidHeight, "_timeStretch": $_timeStretch, '
+        '"_startProgress": $_startProgress, "_preCompWidth": $_preCompWidth, '
+        '"_preCompHeight": $_preCompHeight, "_name": $_name, "_refId": $_refId, '
+        '"_solidColor": $_solidColor, "_shapes": $_shapes, "_masks": $_masks, '
+        '"_inOutKeyframes": $_inOutKeyframes, "_type": $_type, '
+        '"_matteType": $_matteType, "_transform": $_transform}';
+  }
 
 
 }

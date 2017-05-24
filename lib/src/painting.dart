@@ -11,9 +11,9 @@ class Mask {
 
   AnimatableShapeValue get path => _path;
 
-  Mask.fromMap(dynamic map, double scale)
+  Mask.fromMap(dynamic map, double scale, double durationFrames)
       : _mode = calculateMode(map['mode']),
-        _path = new AnimatableShapeValue.fromMap(map, scale);
+        _path = new AnimatableShapeValue.fromMap(map, scale, durationFrames);
 
   static MaskMode calculateMode(String rawMode) {
     switch(rawMode) {

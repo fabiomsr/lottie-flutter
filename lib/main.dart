@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() {
 
     loadAsset().then((composition) {
-      print("My first composition $composition");
+      print(composition);
     });
     setState(() {
       _counter++;

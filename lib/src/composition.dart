@@ -45,4 +45,14 @@ class LottieComposition {
         _endFrame);
   }
 
+  @override
+  String toString() {
+    return '{"_preComps": $_preComps, "_images": $_images, '
+        '"_layers": $_layers, "_bounds": $_bounds, "_startFrame": $_startFrame, '
+        '"_endFrame": $_endFrame, "_frameRate": $_frameRate, "_dpScale": $_dpScale}';
+  }
+
+
+
+
 }

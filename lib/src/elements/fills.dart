@@ -9,8 +9,8 @@ abstract class Fill extends Shape {
   final PathFillType _type;
   final AnimatableIntegerValue _opacity;
 
-  Fill.fromMap(map)
-      : _opacity = parseOpacity(map),
+  Fill.fromMap(map, double durationFrames)
+      : _opacity = parseOpacity(map, durationFrames),
         _type = parseFillType(map),
         super.fromMap(map);
 }
@@ -19,8 +19,8 @@ class ShapeFill extends Shape {
   final bool _fillEnabled;
   final AnimatableColorValue _color;
 
-  ShapeFill.fromMap(dynamic map, double scale)
-      : _color = parseColor(map),
+  ShapeFill.fromMap(dynamic map, double scale, double durationFrames)
+      : _color = parseColor(map, durationFrames),
         _fillEnabled = map["fillEnabled"],
         super.fromMap(map);
 }
@@ -33,10 +33,10 @@ class GradientFill extends Shape {
   final AnimatablePointValue _end;
   final AnimatableGradientColorValue _gradientColor;
 
-  GradientFill.fromMap(dynamic map, double scale)
-      : _gradientColor = parseGradient(map),
+  GradientFill.fromMap(dynamic map, double scale, double durationFrames)
+      : _gradientColor = parseGradient(map, durationFrames),
         _gradientType = parseGradientType(map),
-        _start = parseStartPoint(map, scale),
-        _end = parseEndPoint(map, scale),
+        _start = parseStartPoint(map, scale, durationFrames),
+        _end = parseEndPoint(map, scale, durationFrames),
         super.fromMap(map);
 }

@@ -59,6 +59,6 @@ abstract class AnimationDrawable implements Drawable {
   }
 }
 
-abstract class PathDrawable {
+abstract class PathContent implements Content{
   Path get path;
 }

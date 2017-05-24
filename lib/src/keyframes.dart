@@ -36,32 +36,36 @@ class Keyframe<T> {
   Keyframe([this._startFrame, this._endFrame, this._durationFrames,
     this._startValue, this._endValue]);
 
-  Keyframe.fromMap(Map<String, dynamic> map, Parser<T> parser, double scale) {
+  Keyframe.fromMap(Map<String, dynamic> map, Parser<T> parser, double scale,
+      this._durationFrames) {
     if (!map.containsKey('t')) {
       _startValue = parser.parse(map, scale);
       _endValue = _startValue;
       return;
     }
 
-    _startFrame = map['t'];
-    _startValue = map.containsKey('s') ?  parser.parse(map['s'], scale) : null;
-    _endValue = map.containsKey('e')  ? parser.parse(map['e'], scale) : null;
+    _startFrame = map['t'] ?? 0.0;
+    _startValue = map.containsKey('s') ? parser.parse(map['s'], scale) : null;
+    _endValue = map.containsKey('e') ? parser.parse(map['e'], scale) : null;
 
     if (map['h'] == 1) {
       _endValue = _startValue;
       _curve = Curves.linear;
     } else if (map.containsKey('o')) {
       final double x1 = _clamp(map['o']['x'], -scale, scale) / scale;
-      final double y1 = _clamp(map['o']['y'], -MAX_CP_VALUE, MAX_CP_VALUE) / scale;
+      final double y1 = _clamp(map['o']['y'], -MAX_CP_VALUE, MAX_CP_VALUE) /
+          scale;
       final double x2 = _clamp(map['i']['x'], -scale, scale) / scale;
-      final double y2 = _clamp(map['i']['y'], -MAX_CP_VALUE, MAX_CP_VALUE) / scale;
+      final double y2 = _clamp(map['i']['y'], -MAX_CP_VALUE, MAX_CP_VALUE) /
+          scale;
       _curve = new Cubic(x1, y1, x2, y2);
     } else {
       _curve = Curves.linear;
     }
   }
 
-  double _clamp(dynamic value, double min, double max) => parseMapToDouble(value).clamp(min, max);
+  double _clamp(dynamic value, double min, double max) =>
+      parseMapToDouble(value).clamp(min, max);
 
   @override
   String toString() {
@@ -84,20 +88,22 @@ class PathKeyframe extends Keyframe<Offset> {
       Offset startValue, Offset endValue)
       : super(startFrame, endFrame, durationFrames, startValue, endValue);
 
-  PathKeyframe.fromMap(dynamic map, double scale) {
-    Keyframe<Offset> keyframe = new Keyframe.fromMap(
-        map, Parsers.pointFParser, scale);
+  PathKeyframe.fromMap(dynamic map, double scale, double durationFrames)
+      : super.fromMap(map, Parsers.pointFParser, scale, durationFrames){
+//    Keyframe<Offset> keyframe = new Keyframe.fromMap(
+//        map, Parsers.pointFParser, scale, durationFrames);
     Offset cp1 = Parsers.pointFParser.parse(map['ti'], scale);
     Offset cp2 = Parsers.pointFParser.parse(map['to'], scale);
 
-    bool equals = keyframe.endValue != null && keyframe.startValue != null &&
-        keyframe.endValue.dx == keyframe.endValue.dy;
-    if (!equals) {
-      _path = createPath(keyframe.startValue, keyframe.startValue, cp1, cp2);
+    bool equals = _endValue != null && _startValue != null &&
+        _startValue == _endValue;
+
+    if (_endValue != null && !equals) {
+      _path = createPath(_startValue, _endValue, cp1, cp2);
     }
   }
 
-  Path createPath (Offset start, Offset end, Offset cp1, Offset cp2) {
+  Path createPath(Offset start, Offset end, Offset cp1, Offset cp2) {
     Path path = new Path();
     path.moveTo(start.dx, start.dy);
 
@@ -132,22 +138,23 @@ class Scene<T> {
 
 
   Scene(this._keyframes, [bool join = true]) {
-    if(join) {
+    if (join) {
       _joinKeyframes();
     }
   }
 
   const Scene.empty() : this._keyframes = const [];
 
-  Scene.fromMap(dynamic map, Parser<T> parser, scale)
-      : _keyframes = parseKeyframes(map, parser, scale){
-    if(_keyframes.isNotEmpty) {
+  Scene.fromMap(dynamic map, Parser<T> parser, double scale,
+      double durationFrames)
+      : _keyframes = parseKeyframes(map, parser, scale, durationFrames){
+    if (_keyframes.isNotEmpty) {
       _joinKeyframes();
     }
   }
 
   static List<Keyframe> parseKeyframes(dynamic map, Parser parser,
-      double scale) {
+      double scale, double durationFrames) {
     if (map == null) {
       return const [];
     }
@@ -158,7 +165,7 @@ class Scene<T> {
     }
 
     return rawKeyframes.map((rawKeyframe) =>
-    new Keyframe.fromMap(rawKeyframe, parser, scale))
+    new Keyframe.fromMap(rawKeyframe, parser, scale, durationFrames))
         .toList();
   }
 

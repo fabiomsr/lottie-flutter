@@ -1,6 +1,7 @@
 import 'package:Lotie_Flutter/src/animatables.dart';
-import 'package:Lotie_Flutter/src/drawing/animation_drawables.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
+import 'package:Lotie_Flutter/src/drawing/elements/paths.dart';
+import 'package:Lotie_Flutter/src/drawing/elements/shapes.dart';
 import 'package:Lotie_Flutter/src/elements/shapes.dart';
 import 'package:Lotie_Flutter/src/parsers/element_parsers.dart';
 import 'package:Lotie_Flutter/src/values.dart';
@@ -9,10 +10,14 @@ class ShapePath extends Shape {
   final int _index;
   final AnimatableShapeValue _shapePath;
 
-  ShapePath.fromMap(dynamic map, double scale)
+  ShapePath.fromMap(dynamic map, double scale, double durationFrames)
       : _index = map['ind'],
-        _shapePath = new AnimatableShapeValue.fromMap(map['ke'], scale),
+        _shapePath = new AnimatableShapeValue.fromMap(map['ks'], scale, durationFrames),
         super.fromMap(map);
+
+  @override
+  AnimationDrawable toDrawable(Repaint repaint) =>
+      new ShapeDrawable(name, repaint, _shapePath.createAnimation());
 }
 
 class ShapeTrimPath extends Shape {
@@ -22,11 +27,11 @@ class ShapeTrimPath extends Shape {
   final AnimatableDoubleValue _end;
   final AnimatableDoubleValue _offset;
 
-  ShapeTrimPath.fromMap(dynamic map, double scale)
+  ShapeTrimPath.fromMap(dynamic map, double scale, double durationFrames)
       : _type = parseShapeTrimPathType(map),
-        _start = new AnimatableDoubleValue.fromMap(map['s'], scale),
-        _end = new AnimatableDoubleValue.fromMap(map['e'], scale),
-        _offset = new AnimatableDoubleValue.fromMap(map['o'], scale),
+        _start = new AnimatableDoubleValue.fromMap(map['s'], 1.0, durationFrames),
+        _end = new AnimatableDoubleValue.fromMap(map['e'], 1.0, durationFrames),
+        _offset = new AnimatableDoubleValue.fromMap(map['o'], 1.0, durationFrames),
         super.fromMap(map);
 
   @override

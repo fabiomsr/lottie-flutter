@@ -316,7 +316,7 @@ void _expectGradientKeyframe(dynamic map, Matcher curveMatcher) {
 
 void _expect<T>(dynamic map, Parser<T> parser, T startValue, T endValue,
     Matcher curveMatcher) {
-  var keyframe = new Keyframe<T>.fromMap(map, parser, 1.0);
+  var keyframe = new Keyframe<T>.fromMap(map, parser, 1.0, 0.0);
   expect(keyframe.startValue, startValue);
   expect(keyframe.endValue, endValue);
   expect(keyframe.curve, curveMatcher);
