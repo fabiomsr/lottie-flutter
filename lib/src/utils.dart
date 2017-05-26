@@ -6,23 +6,26 @@
 
 import 'dart:math';
 import 'package:Lotie_Flutter/src/animations.dart';
-import 'package:flutter/painting.dart' show Color, Path;
+import 'package:flutter/painting.dart' show Color, Offset, Path;
+import 'package:vector_math/vector_math_64.dart';
 
 double lerp(double a, double b, double percentage) => a + percentage * (b - a);
 
-int lerpInt(int a, int b, double percentage) => (a + percentage * (b - a)).toInt();
+int lerpInt(int a, int b, double percentage) =>
+    (a + percentage * (b - a)).toInt();
 
 /// Parse the color string and return the corresponding Color.
 /// Supported formatS are:
 /// #RRGGBB and #AARRGGBB
 Color parseColor(String colorString) {
-  if(colorString[0] == '#') {
-    int color = int.parse(colorString.substring(0), radix: 16, onError: (source) => null);
-    if(colorString.length == 7) {
+  if (colorString[0] == '#') {
+    int color = int.parse(colorString.substring(0),
+        radix: 16, onError: (source) => null);
+    if (colorString.length == 7) {
       return new Color(color |= 0x00000000ff000000);
     }
 
-    if(colorString.length == 9) {
+    if (colorString.length == 9) {
       return new Color(color);
     }
   }
@@ -31,19 +34,18 @@ Color parseColor(String colorString) {
 }
 
 class GammaEvaluator {
-
   GammaEvaluator._();
 
   static Color evaluate(double fraction, Color start, Color end) {
     double startA = start.alpha / 255.0;
-    double startR = start.red  / 255.0;
+    double startR = start.red / 255.0;
     double startG = start.green / 255.0;
     double startB = start.blue / 255.0;
 
     double endA = end.alpha / 255.0;
-    double endR = end.red  / 255.0;
-    double endG = end.green  / 255.0;
-    double endB = end.blue  / 255.0;
+    double endR = end.red / 255.0;
+    double endG = end.green / 255.0;
+    double endB = end.blue / 255.0;
 
     // convert from sRGB to linear
     startR = _EOCF_sRGB(startR);
@@ -66,16 +68,17 @@ class GammaEvaluator {
     g = _OECF_sRGB(g) * 255.0;
     b = _OECF_sRGB(b) * 255.0;
 
-    return new Color(a.round() << 24 | r.round() << 16 | g.round() << 8 | b.round());
+    return new Color(
+        a.round() << 24 | r.round() << 16 | g.round() << 8 | b.round());
   }
 
   // Opto-electronic conversion function for the sRGB color space
   // Takes a gamma-encoded sRGB value and converts it to a linear sRGB value
   static double _OECF_sRGB(double linear) {
     // IEC 61966-2-1:1999
-    return linear <= 0.0031308 ?
-    linear * 12.92 :
-    (pow(linear, 1.0 / 2.4) * 1.055) - 0.055;
+    return linear <= 0.0031308
+        ? linear * 12.92
+        : (pow(linear, 1.0 / 2.4) * 1.055) - 0.055;
   }
 
   // Electro-optical conversion function for the sRGB color space
@@ -89,11 +92,26 @@ class GammaEvaluator {
 int calculateAlpha(int from, BaseKeyframeAnimation<dynamic, int> opacity) =>
     ((from / 255.0 * opacity.value / 100.0) * 255.0).toInt();
 
+double hypot(double x, double y) => pow(x, 2) + pow(y, 2);
 
-Path applyScaleTrimIfNeeded(Path path, double start, double end, double offset) {
-  return applyTrimIfNeeded(path, start / 100.0, end / 100.0, offset / 100.0);
+double calculateScale(Matrix4 matrix) {
+  final sqrt2 = sqrt(2);
+  final transform = matrix.transform(new Vector4(0.0, 0.0, sqrt2, sqrt2));
+  return hypot(transform.z - transform.x, transform.w - transform.y) / 2;
 }
+
+
+//TODO: Review this :?
+// Android version: path.add(path, parentMatrix)
+void addPathToPath(Path path, Path other, Matrix4 transform) =>
+    path.addPath(other.transform(transform.storage), const Offset(0.0, 0.0));
+
+Path applyScaleTrimIfNeeded(
+    Path path, double start, double end, double offset) {
+  return applyTrimPathIfNeeded(path, start / 100.0, end / 100.0, offset / 100.0);
+}
+
 // TODO: wait for SkPathMeasure
-Path applyTrimIfNeeded(Path path, double start, double end, double offset) {
+Path applyTrimPathIfNeeded(Path path, double start, double end, double offset) {
   return path;
 }

@@ -7,14 +7,13 @@ import 'package:flutter/painting.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 abstract class FillDrawable extends AnimationDrawable {
-  final Paint _paint = new Paint()
-    ..isAntiAlias = true;
+  final Paint _paint = new Paint()..isAntiAlias = true;
   final PathFillType _fillType;
   final List<PathContent> _paths = [];
   final KeyframeAnimation<int> _opacityAnimation;
 
-  FillDrawable(String name, Repaint repaint, this._opacityAnimation,
-      this._fillType)
+  FillDrawable(
+      String name, Repaint repaint, this._opacityAnimation, this._fillType)
       : super(name, repaint) {
     if (_opacityAnimation != null) {
       addAnimation(_opacityAnimation);
@@ -36,40 +35,38 @@ abstract class FillDrawable extends AnimationDrawable {
     Rect outBounds = new Rect.fromLTRB(0.0, 0.0, 0.0, 0.0);
     //TODO: computeBounds method is not expose
     //path.computeBounds(outBounds, false);
-    return new Rect.fromLTRB(outBounds.left - 1,
-        outBounds.top - 1, outBounds.right + 1,
-        outBounds.bottom + 1);
+    return new Rect.fromLTRB(outBounds.left - 1, outBounds.top - 1,
+        outBounds.right + 1, outBounds.bottom + 1);
   }
 
   Path _createPathFromSection(Matrix4 transform) {
     Path path = new Path();
     for (var pathSection in _paths) {
-      //TODO: Review this :?
-      // Android version: path.add(path, parentMatrix)
-      path.addPath(pathSection.path.transform(transform.storage),
-          const Offset(0.0, 0.0));
+      addPathToPath(path, pathSection.path, transform);
     }
 
     return path;
   }
-
 }
 
 class ShapeFillDrawable extends FillDrawable {
-
   final KeyframeAnimation<Color> _colorAnimation;
 
-  ShapeFillDrawable(String name, Repaint repaint,
-      KeyframeAnimation<int> opacityAnimation, PathFillType fillType,
-      this._colorAnimation) : super(name, repaint, opacityAnimation, fillType) {
+  ShapeFillDrawable(
+      String name,
+      Repaint repaint,
+      KeyframeAnimation<int> opacityAnimation,
+      PathFillType fillType,
+      this._colorAnimation)
+      : super(name, repaint, opacityAnimation, fillType) {
     if (_colorAnimation != null) {
       addAnimation(_colorAnimation);
     }
   }
 
   @override
-  void addColorFilter(String layerName, String contentName,
-      ColorFilter colorFilter) {
+  void addColorFilter(
+      String layerName, String contentName, ColorFilter colorFilter) {
     _paint.colorFilter = colorFilter;
   }
 
@@ -83,27 +80,29 @@ class ShapeFillDrawable extends FillDrawable {
 
     canvas.drawPath(path, _paint);
   }
-
 }
 
-
 class GradientFillDrawable extends FillDrawable {
-
   final GradientType _gradientType;
   final KeyframeAnimation<GradientColor> _gradientColorAnimation;
   final KeyframeAnimation<Offset> _startPointAnimation;
   final KeyframeAnimation<Offset> _endPointAnimation;
 
-  GradientFillDrawable(String name, Repaint repaint,
-      KeyframeAnimation<int> opacityAnimation, PathFillType fillType,
-      this._gradientType, this._gradientColorAnimation,
-      this._startPointAnimation, this._endPointAnimation,)
+  GradientFillDrawable(
+    String name,
+    Repaint repaint,
+    KeyframeAnimation<int> opacityAnimation,
+    PathFillType fillType,
+    this._gradientType,
+    this._gradientColorAnimation,
+    this._startPointAnimation,
+    this._endPointAnimation,
+  )
       : super(name, repaint, opacityAnimation, fillType) {
     addAnimation(_gradientColorAnimation);
     addAnimation(_startPointAnimation);
     addAnimation(_endPointAnimation);
   }
-
 
   @override
   void draw(Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
@@ -112,8 +111,8 @@ class GradientFillDrawable extends FillDrawable {
 
     _paint
       ..shader = createGradientShader()
-      ..color = _paint.color.withAlpha(
-          calculateAlpha(parentAlpha, _opacityAnimation));
+      ..color = _paint.color
+          .withAlpha(calculateAlpha(parentAlpha, _opacityAnimation));
 
     canvas.drawPath(path, _paint);
   }
@@ -131,28 +130,32 @@ class GradientFillDrawable extends FillDrawable {
     double x1 = bounds.left + bounds.width / 2 + endPoint.dx;
     double y1 = bounds.top + bounds.height / 2 + endPoint.dy;
 
-    return _gradientType == GradientType.Linear ?
-    _createLinearGradientShader(x0, y0, x1, y1, bounds)
+    return _gradientType == GradientType.Linear
+        ? _createLinearGradientShader(x0, y0, x1, y1, bounds)
         : _createRadialGradientShader(x0, y0, x1, y1, bounds);
   }
 
-  Shader _createLinearGradientShader(double x0, double y0, double x1, double y1,
-      Rect bounds) {
+  Shader _createLinearGradientShader(
+      double x0, double y0, double x1, double y1, Rect bounds) {
     final gradientColor = _gradientColorAnimation.value;
-    return new LinearGradient(begin: new FractionalOffset(x0, y0),
+    return new LinearGradient(
+      begin: new FractionalOffset(x0, y0),
       end: new FractionalOffset(x1, y1),
       colors: gradientColor.colors,
       stops: gradientColor.positions,
-    ).createShader(bounds);
+    )
+        .createShader(bounds);
   }
 
-  Shader _createRadialGradientShader(double x0, double y0, double x1, double y1,
-      Rect bounds) {
+  Shader _createRadialGradientShader(
+      double x0, double y0, double x1, double y1, Rect bounds) {
     final gradientColor = _gradientColorAnimation.value;
-    return new RadialGradient(center: new FractionalOffset(x0, y0),
-      radius: sqrt(pow(x1 - x0, 2) + pow(y1 - y0, 2)),
+    return new RadialGradient(
+      center: new FractionalOffset(x0, y0),
+      radius: sqrt(hypot(x1 - x0, y1 - y0)),
       colors: gradientColor.colors,
       stops: gradientColor.positions,
-    ).createShader(bounds);
+    )
+        .createShader(bounds);
   }
 }

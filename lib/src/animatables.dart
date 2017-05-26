@@ -1,4 +1,3 @@
-
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
@@ -32,18 +31,20 @@ abstract class BaseAnimatableValue<V, O> implements AnimatableValue<O> {
 //
 //  Integer
 //
-class AnimatableIntegerValue extends  BaseAnimatableValue<int, int>{
-
+class AnimatableIntegerValue extends BaseAnimatableValue<int, int> {
   static final AnimatableValueParser _parser = new AnimatableValueParser<int>();
 
-  AnimatableIntegerValue([int initialValue = 100, Scene scene]) : super(initialValue, scene);
+  AnimatableIntegerValue([int initialValue = 100, Scene scene])
+      : super(initialValue, scene);
 
   AnimatableIntegerValue.fromMap(dynamic map, double durationFrames)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.intParser, 1.0, durationFrames));
+      : super.fromKeyframeGroup(
+            _parser.parse(map, Parsers.intParser, 1.0, durationFrames));
 
   @override
   KeyframeAnimation<int> createAnimation() {
-    return hasAnimation ? new IntegerKeyframeAnimation(scene)
+    return hasAnimation
+        ? new IntegerKeyframeAnimation(scene)
         : new StaticKeyframeAnimation(initialValue);
   }
 }
@@ -52,38 +53,41 @@ class AnimatableIntegerValue extends  BaseAnimatableValue<int, int>{
 //  Double
 //
 class AnimatableDoubleValue extends BaseAnimatableValue<double, double> {
-
-  static final AnimatableValueParser _parser = new AnimatableValueParser<double>();
+  static final AnimatableValueParser _parser =
+      new AnimatableValueParser<double>();
 
   AnimatableDoubleValue() : super(0.0, new Scene.empty());
 
-  AnimatableDoubleValue.fromMap(dynamic map, double scale, double durationFrames)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.doubleParser, scale, durationFrames));
+  AnimatableDoubleValue.fromMap(
+      dynamic map, double scale, double durationFrames)
+      : super.fromKeyframeGroup(
+            _parser.parse(map, Parsers.doubleParser, scale, durationFrames));
 
   @override
   KeyframeAnimation<double> createAnimation() {
-    return hasAnimation ? new DoubleKeyframeAnimation(scene)
+    return hasAnimation
+        ? new DoubleKeyframeAnimation(scene)
         : new StaticKeyframeAnimation(initialValue);
   }
-
 }
 
 //
 //  Color
 //
 class AnimatableColorValue extends BaseAnimatableValue<Color, Color> {
-
-  static final AnimatableValueParser _parser = new AnimatableValueParser<Color>();
+  static final AnimatableValueParser _parser =
+      new AnimatableValueParser<Color>();
 
   AnimatableColorValue.fromMap(dynamic map, double durationFrames)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.colorParser, 1.0, durationFrames));
+      : super.fromKeyframeGroup(
+            _parser.parse(map, Parsers.colorParser, 1.0, durationFrames));
 
   @override
   KeyframeAnimation<Color> createAnimation() {
-    return hasAnimation ? new ColorKeyframeAnimation(scene)
+    return hasAnimation
+        ? new ColorKeyframeAnimation(scene)
         : new StaticKeyframeAnimation(initialValue);
   }
-
 }
 
 //
@@ -91,101 +95,100 @@ class AnimatableColorValue extends BaseAnimatableValue<Color, Color> {
 //
 class AnimatableGradientColorValue
     extends BaseAnimatableValue<GradientColor, GradientColor> {
-
-  static final AnimatableValueParser _parser = new AnimatableValueParser<
-      GradientColor>();
+  static final AnimatableValueParser _parser =
+      new AnimatableValueParser<GradientColor>();
 
   AnimatableGradientColorValue.fromMap(dynamic map, double durationFrames)
-      : super.fromKeyframeGroup(
-      _parser.parse(map, new GradientColorParser(map['p']), 1.0, durationFrames));
-
+      : super.fromKeyframeGroup(_parser.parse(
+            map, new GradientColorParser(map['p']), 1.0, durationFrames));
 
   @override
   KeyframeAnimation<GradientColor> createAnimation() {
-    return hasAnimation ? new GradientColorKeyframeAnimation(scene) :
-    new StaticKeyframeAnimation(initialValue);
+    return hasAnimation
+        ? new GradientColorKeyframeAnimation(scene)
+        : new StaticKeyframeAnimation(initialValue);
   }
-
 }
-
 
 //
 //  Point
 //
 class AnimatablePointValue extends BaseAnimatableValue<Offset, Offset> {
-
-  static final AnimatableValueParser _parser = new AnimatableValueParser<Offset>();
+  static final AnimatableValueParser _parser =
+      new AnimatableValueParser<Offset>();
 
   AnimatablePointValue.fromMap(dynamic map, double scale, double durationFrames)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.pointFParser, scale, durationFrames));
-
+      : super.fromKeyframeGroup(
+            _parser.parse(map, Parsers.pointFParser, scale, durationFrames));
 
   @override
   KeyframeAnimation<Offset> createAnimation() {
-    return hasAnimation ? new PointKeyframeAnimation(scene)
+    return hasAnimation
+        ? new PointKeyframeAnimation(scene)
         : new StaticKeyframeAnimation(initialValue);
   }
-
 }
-
 
 //
 //  Scale
 //
 class AnimatableScaleValue extends BaseAnimatableValue<Offset, Offset> {
-
-  static final AnimatableValueParser _parser = new AnimatableValueParser<Offset>();
+  static final AnimatableValueParser _parser =
+      new AnimatableValueParser<Offset>();
 
   AnimatableScaleValue() : super(Offset.zero, new Scene.empty());
 
   AnimatableScaleValue.fromMap(dynamic map, double durationFrames)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.scaleParser, 1.0, durationFrames));
-
+      : super.fromKeyframeGroup(
+            _parser.parse(map, Parsers.scaleParser, 1.0, durationFrames));
 
   @override
   KeyframeAnimation<Offset> createAnimation() {
-    return hasAnimation ? new ScaleKeyframeAnimation(scene)
+    return hasAnimation
+        ? new ScaleKeyframeAnimation(scene)
         : new StaticKeyframeAnimation(initialValue);
   }
 }
-
 
 //
 //  Shape
 //
 class AnimatableShapeValue extends BaseAnimatableValue<ShapeData, Path> {
-
-  static final AnimatableValueParser _parser = new AnimatableValueParser<ShapeData>();
+  static final AnimatableValueParser _parser =
+      new AnimatableValueParser<ShapeData>();
 
   AnimatableShapeValue.fromMap(dynamic map, double scale, double durationFrames)
-      : super.fromKeyframeGroup(_parser.parse(map, Parsers.shapeDataParser, scale, durationFrames));
+      : super.fromKeyframeGroup(
+            _parser.parse(map, Parsers.shapeDataParser, scale, durationFrames));
 
   @override
   BaseKeyframeAnimation<dynamic, Path> createAnimation() {
-    return hasAnimation ? new ShapeKeyframeAnimation(scene) :
-    new StaticKeyframeAnimation(Parsers.pathParser.parseFromShape(initialValue));
+    return hasAnimation
+        ? new ShapeKeyframeAnimation(scene)
+        : new StaticKeyframeAnimation(
+            Parsers.pathParser.parseFromShape(initialValue));
   }
 }
-
 
 //
 //  Path
 //
 class AnimatablePathValue extends BaseAnimatableValue<Offset, Offset> {
-
   AnimatablePathValue._([Offset initialValue, Scene scene])
-      : super(initialValue == null ? const Offset(0.0, 0.0) : initialValue, scene);
+      : super(initialValue == null ? const Offset(0.0, 0.0) : initialValue,
+            scene);
 
-
-  factory AnimatablePathValue([dynamic map, double scale, double durationFrames]) {
-    if(map == null) {
+  factory AnimatablePathValue(
+      [dynamic map, double scale, double durationFrames]) {
+    if (map == null) {
       return new AnimatablePathValue();
     }
 
-    if(hasKeyframes(map)) {
+    if (hasKeyframes(map)) {
       List rawKeyframes = map as List;
       List<Keyframe<Offset>> keyframes = rawKeyframes
-          .map((rawKeyframe) => new PathKeyframe.fromMap(rawKeyframe, scale, durationFrames))
+          .map((rawKeyframe) =>
+              new PathKeyframe.fromMap(rawKeyframe, scale, durationFrames))
           .toList();
 
       Scene scene = new Scene(keyframes);
@@ -198,22 +201,21 @@ class AnimatablePathValue extends BaseAnimatableValue<Offset, Offset> {
 
   @override
   KeyframeAnimation<Offset> createAnimation() {
-    return hasAnimation ? new PathKeyframeAnimation(scene) :
-    new StaticKeyframeAnimation(initialValue);
+    return hasAnimation
+        ? new PathKeyframeAnimation(scene)
+        : new StaticKeyframeAnimation(initialValue);
   }
 }
-
 
 //
 //  Split Dimension
 //
 class AnimatableSplitDimensionValue implements AnimatableValue<Offset> {
-
   final AnimatableDoubleValue _animatableXDimension;
   final AnimatableDoubleValue _animatableYDimension;
 
-  AnimatableSplitDimensionValue(this._animatableXDimension,
-      this._animatableYDimension);
+  AnimatableSplitDimensionValue(
+      this._animatableXDimension, this._animatableYDimension);
 
   @override
   BaseKeyframeAnimation<dynamic, Offset> createAnimation() {
@@ -227,29 +229,27 @@ class AnimatableSplitDimensionValue implements AnimatableValue<Offset> {
       _animatableXDimension.hasAnimation || _animatableYDimension.hasAnimation;
 }
 
-
-
 class AnimatableValueParser<T> {
-
-  KeyframeGroup<T> parse(dynamic map, Parser<T> parser, double scale, double durationFrames) {
+  KeyframeGroup<T> parse(
+      dynamic map, Parser<T> parser, double scale, double durationFrames) {
     Scene scene = _parseKeyframes(map, parser, scale, durationFrames);
     T initialValue = _parseInitialValue(map, scene.keyframes, parser, scale);
     return new KeyframeGroup(initialValue, scene);
   }
 
-  Scene _parseKeyframes(dynamic map, Parser<T> parser, double scale, double durationFrames) {
+  Scene _parseKeyframes(
+      dynamic map, Parser<T> parser, double scale, double durationFrames) {
     return new Scene.fromMap(map, parser, scale, durationFrames);
   }
 
-  T _parseInitialValue(dynamic map, List<Keyframe<T>> keyframes,
-      Parser<T> parser, scale) {
-    if(keyframes.isNotEmpty) {
+  T _parseInitialValue(
+      dynamic map, List<Keyframe<T>> keyframes, Parser<T> parser, scale) {
+    if (keyframes.isNotEmpty) {
       return keyframes.first.startValue;
     }
 
-    var rawInitialValue =  map == null ? null : map['k'];
+    var rawInitialValue = map == null ? null : map['k'];
 
-    return parser.parse( rawInitialValue, scale);
+    return parser.parse(rawInitialValue, scale);
   }
-
 }
