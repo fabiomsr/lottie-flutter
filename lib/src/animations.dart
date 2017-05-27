@@ -1,3 +1,4 @@
+import 'package:Lotie_Flutter/src/mathutils.dart';
 import 'package:Lotie_Flutter/src/painting.dart' show Mask;
 import 'package:Lotie_Flutter/src/parsers/parsers.dart';
 import 'package:Lotie_Flutter/src/utils.dart';

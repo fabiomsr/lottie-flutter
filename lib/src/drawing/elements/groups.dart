@@ -7,8 +7,10 @@ import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-class ContentGroup implements Drawable {
-  ContentGroup(String name, List<Shape> shapes);
+class DrawableGroup extends AnimationDrawable implements PathContent {
+  List<PathContent> get paths => [];
+
+  DrawableGroup(String name, Repaint repaint, List<Shape> shapes) : super(name, repaint);
 
   @override
   void setContents(List<Content> contentsBefore, List<Content> contentsAfter) {
@@ -32,9 +34,12 @@ class ContentGroup implements Drawable {
     return null;
   }
 
-  // TODO: implement name
+
+  Matrix4 get transformation => null;
+
+  // TODO: implement path
   @override
-  String get name => null;
+  Path get path => null;
 }
 
 

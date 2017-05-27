@@ -106,56 +106,21 @@ class GradientFillDrawable extends FillDrawable {
 
   @override
   void draw(Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
-    Path path = _createPathFromSection(parentMatrix);
+    final path = _createPathFromSection(parentMatrix);
     path.fillType = _fillType;
 
+
+    // TODO computeBounds
+    final bounds = new Rect.fromLTRB(0.0, 0.0, 0.0, 0.0);
+    //path.computeBounds(boundsRect, false);
+
     _paint
-      ..shader = createGradientShader()
+      ..shader = createGradientShader(_gradientColorAnimation.value,
+          _gradientType, _startPointAnimation.value, _endPointAnimation.value,
+          bounds)
       ..color = _paint.color
           .withAlpha(calculateAlpha(parentAlpha, _opacityAnimation));
 
     canvas.drawPath(path, _paint);
-  }
-
-  Shader createGradientShader() {
-    final startPoint = _startPointAnimation.value;
-    final endPoint = _endPointAnimation.value;
-
-    // TODO computeBounds
-    //path.computeBounds(boundsRect, false);
-    final bounds = new Rect.fromLTRB(0.0, 0.0, 0.0, 0.0);
-
-    double x0 = bounds.left + bounds.width / 2 + startPoint.dx;
-    double y0 = bounds.top + bounds.height / 2 + startPoint.dy;
-    double x1 = bounds.left + bounds.width / 2 + endPoint.dx;
-    double y1 = bounds.top + bounds.height / 2 + endPoint.dy;
-
-    return _gradientType == GradientType.Linear
-        ? _createLinearGradientShader(x0, y0, x1, y1, bounds)
-        : _createRadialGradientShader(x0, y0, x1, y1, bounds);
-  }
-
-  Shader _createLinearGradientShader(
-      double x0, double y0, double x1, double y1, Rect bounds) {
-    final gradientColor = _gradientColorAnimation.value;
-    return new LinearGradient(
-      begin: new FractionalOffset(x0, y0),
-      end: new FractionalOffset(x1, y1),
-      colors: gradientColor.colors,
-      stops: gradientColor.positions,
-    )
-        .createShader(bounds);
-  }
-
-  Shader _createRadialGradientShader(
-      double x0, double y0, double x1, double y1, Rect bounds) {
-    final gradientColor = _gradientColorAnimation.value;
-    return new RadialGradient(
-      center: new FractionalOffset(x0, y0),
-      radius: sqrt(hypot(x1 - x0, y1 - y0)),
-      colors: gradientColor.colors,
-      stops: gradientColor.positions,
-    )
-        .createShader(bounds);
   }
 }

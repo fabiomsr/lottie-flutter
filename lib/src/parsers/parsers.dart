@@ -1,3 +1,4 @@
+import 'package:Lotie_Flutter/src/mathutils.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:flutter/painting.dart' show Color, Offset, Path;

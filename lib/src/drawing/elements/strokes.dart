@@ -4,6 +4,7 @@ import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/drawing/elements/paths.dart';
 import 'package:Lotie_Flutter/src/elements/paths.dart';
+import 'package:Lotie_Flutter/src/mathutils.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:flutter/painting.dart';
@@ -228,6 +229,7 @@ class StrokeDrawable extends AnimationDrawable {
       return;
     }
 
+    //TODO: DashPathEffect
     /*
     double scale = calculateScale(parentMatrix);
     for (int i = 0; i < _dashPatternAnimations.length; i++) {
@@ -252,5 +254,71 @@ class StrokeDrawable extends AnimationDrawable {
     _paint.pathEffect = new DashPathEffect(dashPatternValues, offset);
     */
   }
+}
 
+class ShapeStrokeDrawable extends StrokeDrawable {
+  final KeyframeAnimation<Color> _colorAnimation;
+
+  ShapeStrokeDrawable(
+      String name,
+      StrokeCap strokeCap,
+      JoinType strokeJoin,
+      List<AnimatableDoubleValue> dashPatternValues,
+      Repaint repaint,
+      BaseKeyframeAnimation<dynamic, int> opacityAnimation,
+      BaseKeyframeAnimation<dynamic, double> widthAnimation,
+      BaseKeyframeAnimation<dynamic, double> dashPatternOffsetAnimation,
+      this._colorAnimation)
+      : super(name, strokeCap, strokeJoin, dashPatternValues, repaint,
+            opacityAnimation, widthAnimation, dashPatternOffsetAnimation) {
+    addAnimation(_colorAnimation);
+  }
+
+  @override
+  void addColorFilter(
+      String layerName, String contentName, ColorFilter colorFilter) {
+    _paint.colorFilter = colorFilter;
+  }
+
+  @override
+  void draw(Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
+    _paint.color = _colorAnimation.value;
+    super.draw(canvas, size, parentMatrix, parentAlpha);
+  }
+}
+
+class GradientStrokeDrawable extends StrokeDrawable {
+  final GradientType _type;
+  final KeyframeAnimation<GradientColor> _colorAnimation;
+  final KeyframeAnimation<Offset> _startPointAnimation;
+  final KeyframeAnimation<Offset> _endPointAnimation;
+
+  GradientStrokeDrawable(
+      String name,
+      StrokeCap strokeCap,
+      JoinType strokeJoin,
+      List<AnimatableDoubleValue> dashPatternValues,
+      Repaint repaint,
+      BaseKeyframeAnimation<dynamic, int> opacityAnimation,
+      BaseKeyframeAnimation<dynamic, double> widthAnimation,
+      BaseKeyframeAnimation<dynamic, double> dashPatternOffsetAnimation,
+      this._type,
+      this._colorAnimation,
+      this._startPointAnimation,
+      this._endPointAnimation)
+      : super(name, strokeCap, strokeJoin, dashPatternValues, repaint,
+            opacityAnimation, widthAnimation, dashPatternOffsetAnimation) {
+    addAnimation(_colorAnimation);
+    addAnimation(_widthAnimation);
+    addAnimation(_dashPatternOffsetAnimation);
+  }
+
+  @override
+  void draw(Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
+    final bounds = getBounds(parentMatrix);
+    _paint.shader =  createGradientShader(_colorAnimation.value,
+        _type , _startPointAnimation.value, _endPointAnimation.value, bounds);
+
+    super.draw(canvas, size, parentMatrix, parentAlpha);
+  }
 }

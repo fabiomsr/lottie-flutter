@@ -6,13 +6,12 @@
 
 import 'dart:math';
 import 'package:Lotie_Flutter/src/animations.dart';
-import 'package:flutter/painting.dart' show Color, Offset, Path;
+import 'package:Lotie_Flutter/src/mathutils.dart';
+import 'package:Lotie_Flutter/src/values.dart';
+import 'package:flutter/painting.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-double lerp(double a, double b, double percentage) => a + percentage * (b - a);
 
-int lerpInt(int a, int b, double percentage) =>
-    (a + percentage * (b - a)).toInt();
 
 /// Parse the color string and return the corresponding Color.
 /// Supported formatS are:
@@ -92,14 +91,6 @@ class GammaEvaluator {
 int calculateAlpha(int from, BaseKeyframeAnimation<dynamic, int> opacity) =>
     ((from / 255.0 * opacity.value / 100.0) * 255.0).toInt();
 
-double hypot(double x, double y) => pow(x, 2) + pow(y, 2);
-
-double calculateScale(Matrix4 matrix) {
-  final sqrt2 = sqrt(2);
-  final transform = matrix.transform(new Vector4(0.0, 0.0, sqrt2, sqrt2));
-  return hypot(transform.z - transform.x, transform.w - transform.y) / 2;
-}
-
 
 //TODO: Review this :?
 // Android version: path.add(path, parentMatrix)
@@ -115,3 +106,34 @@ Path applyScaleTrimIfNeeded(
 Path applyTrimPathIfNeeded(Path path, double start, double end, double offset) {
   return path;
 }
+
+
+Shader createGradientShader(GradientColor gradient, GradientType type,
+    Offset startPoint, Offset endPoint, Rect bounds) {
+  double x0 = bounds.left + bounds.width / 2 + startPoint.dx;
+  double y0 = bounds.top + bounds.height / 2 + startPoint.dy;
+  double x1 = bounds.left + bounds.width / 2 + endPoint.dx;
+  double y1 = bounds.top + bounds.height / 2 + endPoint.dy;
+
+  return type == GradientType.Linear
+      ? _createLinearGradientShader(gradient, x0, y0, x1, y1, bounds)
+      : _createRadialGradientShader(gradient, x0, y0, x1, y1, bounds);
+}
+
+Shader _createLinearGradientShader(GradientColor gradient, double x0,
+    double y0, double x1, double y1, Rect bounds) =>
+    new LinearGradient(
+      begin: new FractionalOffset(x0, y0),
+      end: new FractionalOffset(x1, y1),
+      colors: gradient.colors,
+      stops: gradient.positions,
+    ).createShader(bounds);
+
+Shader _createRadialGradientShader(GradientColor gradient, double x0,
+    double y0, double x1, double y1, Rect bounds) =>
+    new RadialGradient(
+      center: new FractionalOffset(x0, y0),
+      radius: sqrt(hypot(x1 - x0, y1 - y0)),
+      colors: gradient.colors,
+      stops: gradient.positions,
+    ).createShader(bounds);

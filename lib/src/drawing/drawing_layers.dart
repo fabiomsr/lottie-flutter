@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/composition.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
-import 'package:Lotie_Flutter/src/drawing/animation_drawables.dart';
+import 'package:Lotie_Flutter/src/drawing/elements/groups.dart';
 import 'package:Lotie_Flutter/src/layers.dart';
 import 'package:Lotie_Flutter/src/painting.dart';
 import 'package:Lotie_Flutter/src/elements/transforms.dart';
@@ -368,10 +368,10 @@ class SolidLayer extends BaseLayer {
 
 class ShapeLayer extends BaseLayer {
 
-  final ContentGroup _contentGroup;
+  final DrawableGroup _contentGroup;
 
   ShapeLayer(Layer layerModel, Repaint repaint)
-      : _contentGroup = new ContentGroup(layerModel.name, layerModel.shapes),
+      : _contentGroup = new DrawableGroup(layerModel.name, repaint, layerModel.shapes),
         super(layerModel, repaint) {
     _contentGroup.setContents(const [], const []);
   }

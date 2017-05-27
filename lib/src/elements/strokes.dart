@@ -1,10 +1,11 @@
 import 'package:Lotie_Flutter/src/animatables.dart';
+import 'package:Lotie_Flutter/src/drawing/drawing.dart';
+import 'package:Lotie_Flutter/src/drawing/elements/strokes.dart';
 import 'package:Lotie_Flutter/src/elements/shapes.dart';
 
 import 'package:Lotie_Flutter/src/parsers/element_parsers.dart';
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:flutter/painting.dart' show StrokeCap;
-
 
 abstract class Stroke extends Shape {
   final StrokeCap _capType;
@@ -13,18 +14,6 @@ abstract class Stroke extends Shape {
   final LineDashGroup _lineDashGroup;
   final AnimatableDoubleValue _width;
   final AnimatableIntegerValue _opacity;
-
-  AnimatableDoubleValue get offset => _lineDashGroup.offset;
-
-  List<AnimatableDoubleValue> get lineDashPattern => _lineDashGroup.lineDashPattern;
-
-  AnimatableIntegerValue get opacity => _opacity;
-
-  AnimatableDoubleValue get width => _width;
-
-  StrokeCap get capType => _capType;
-
-  JoinType get jointType => _joinType;
 
   Stroke.fromMap(dynamic map, double scale, double durationFrames)
       : _opacity = parseOpacity(map, durationFrames),
@@ -43,6 +32,18 @@ class ShapeStroke extends Stroke {
   ShapeStroke.fromMap(dynamic map, double scale, double durationFrames)
       : _color = parseColor(map, durationFrames),
         super.fromMap(map, scale, durationFrames);
+
+  @override
+  AnimationDrawable toDrawable(Repaint repaint) => new ShapeStrokeDrawable(
+      name,
+      _capType,
+      _joinType,
+      _lineDashGroup.lineDashPattern,
+      repaint,
+      _opacity.createAnimation(),
+      _width.createAnimation(),
+      _lineDashGroup.offset.createAnimation(),
+      _color.createAnimation());
 }
 
 class GradientStroke extends Stroke {
@@ -51,19 +52,25 @@ class GradientStroke extends Stroke {
   final AnimatablePointValue _end;
   final GradientType _type;
 
-  GradientType get type => _type;
-
-  AnimatablePointValue get end => _end;
-
-  AnimatablePointValue get start => _start;
-
-  AnimatableGradientColorValue get gradientColor => _gradientColor;
-
   GradientStroke.fromMap(dynamic map, double scale, double durationFrames)
       : _gradientColor = parseGradient(map, durationFrames),
         _type = parseGradientType(map),
         _start = parseStartPoint(map, scale, durationFrames),
         _end = parseEndPoint(map, scale, durationFrames),
         super.fromMap(map, scale, durationFrames);
-}
 
+  @override
+  AnimationDrawable toDrawable(Repaint repaint) => new GradientStrokeDrawable(
+      name,
+      _capType,
+      _joinType,
+      _lineDashGroup.lineDashPattern,
+      repaint,
+      _opacity.createAnimation(),
+      _width.createAnimation(),
+      _lineDashGroup.offset.createAnimation(),
+      _type,
+      _gradientColor.createAnimation(),
+      _start.createAnimation(),
+      _end.createAnimation());
+}
