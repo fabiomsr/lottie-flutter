@@ -1,8 +1,7 @@
-
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:Lotie_Flutter/src/composition.dart';
+import 'package:Lotie_Flutter/src/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -34,28 +33,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  LottieComposition _composition;
 
   void _incrementCounter() {
-
     loadAsset().then((composition) {
-      print(composition);
-    });
-    setState(() {
-      _counter++;
+      setState(() {
+      _composition = composition;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(widget.title),
       ),
-      body: new Center(
-        child: new Text(
-          'Button tapped $_counter time${ _counter == 1 ? '' : 's' }.',
-        ),
+      body: new Container(
+          child: _composition == null ? new Text("Open file...") : new Lottie(composition: _composition)
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: _incrementCounter,
@@ -66,9 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-
 Future<LottieComposition> loadAsset() async {
-  return await rootBundle.loadString('assets/emoji_shock.json')
+  return await rootBundle
+      .loadString('assets/emoji_shock.json')
       .then((json) => JSON.decode(json))
       .then((map) => new LottieComposition.fromMap(map));
 }

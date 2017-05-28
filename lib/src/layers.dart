@@ -26,7 +26,7 @@ class Layer {
   final String _name;
   final String _refId;
   final Color _solidColor;
-  final List _shapes;
+  final List<Shape> _shapes;
   final List<Mask> _masks;
   final Scene<double> _inOutKeyframes;
   final LayerType _type;
@@ -55,7 +55,7 @@ class Layer {
 
   String get refId => _refId;
 
-  List get shapes => _shapes;
+  List<Shape> get shapes => _shapes;
 
   List<Mask> get masks => _masks;
 
@@ -68,7 +68,7 @@ class Layer {
   AnimatableTransform get transform => _transform;
 
 
-  Layer._empty(this._preCompWidth, this._preCompHeight)
+  Layer.empty(this._preCompWidth, this._preCompHeight)
       : _id = -1,
         _parentId = -1,
         _solidWidth = 0.0,
@@ -95,7 +95,7 @@ class Layer {
   factory Layer([dynamic map, double preCompWidth, double preCompHeight,
     double scale, double durationFrames, int endFrame]) {
     if (map == null) {
-      return new Layer._empty(preCompWidth, preCompHeight);
+      return new Layer.empty(preCompWidth, preCompHeight);
     }
 
     final int rawType = map['ty'] ?? -1;

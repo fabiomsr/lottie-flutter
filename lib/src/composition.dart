@@ -30,6 +30,8 @@ class LottieComposition {
 
   List<Layer> get layers => _layers;
 
+  Rect get bounds => _bounds;
+
   LottieComposition.fromMap(dynamic map)
       : _bounds = parseBounds(map),
         _startFrame = parseStartFrame(map),

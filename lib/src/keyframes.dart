@@ -13,7 +13,8 @@ class Keyframe<T> {
   T _endValue;
   Curve _curve;
 
-  double get startProgress => _startFrame / _durationFrames;
+  double get startProgress {
+    return _startFrame / _durationFrames; }
 
   double get endProgress => _endFrame == null ? 1 : _endFrame / _durationFrames;
 
@@ -90,8 +91,6 @@ class PathKeyframe extends Keyframe<Offset> {
 
   PathKeyframe.fromMap(dynamic map, double scale, double durationFrames)
       : super.fromMap(map, Parsers.pointFParser, scale, durationFrames){
-//    Keyframe<Offset> keyframe = new Keyframe.fromMap(
-//        map, Parsers.pointFParser, scale, durationFrames);
     Offset cp1 = Parsers.pointFParser.parse(map['ti'], scale);
     Offset cp2 = Parsers.pointFParser.parse(map['to'], scale);
 

@@ -145,7 +145,7 @@ AnimatableValue<Offset> parsePathOrSplitDimensionPath(dynamic map,
     double scale, double durationFrames) {
   final rawPosition = map['p'];
 
-  return rawPosition.containsKey('k') ? new AnimatablePathValue(rawPosition['k'], scale)
+  return rawPosition.containsKey('k') ? new AnimatablePathValue(rawPosition['k'], scale, durationFrames)
       : new AnimatableSplitDimensionValue(
       new AnimatableDoubleValue.fromMap(rawPosition['x'], scale, durationFrames),
       new AnimatableDoubleValue.fromMap(rawPosition['y'], scale, durationFrames));

@@ -1,3 +1,5 @@
+import 'package:Lotie_Flutter/src/drawing/drawing.dart';
+import 'package:Lotie_Flutter/src/drawing/elements/groups.dart';
 import 'package:Lotie_Flutter/src/elements/fills.dart';
 import 'package:Lotie_Flutter/src/elements/paths.dart';
 import 'package:Lotie_Flutter/src/elements/shapes.dart';
@@ -13,8 +15,17 @@ class ShapeGroup extends Shape {
       : _shapes = parseRawShapes(map['it'], scale, durationFrames),
         super.fromMap(map);
 
-  static List<Shape> parseRawShapes(List rawShapes, double scale, double durationFrames) =>
-      rawShapes.map((rawShape) => shapeFromMap(rawShape, scale, durationFrames))
+  @override
+  AnimationDrawable toDrawable(Repaint repaint) => new DrawableGroup(
+      name,
+      repaint,
+      shapesToAnimationDrawable(repaint, _shapes),
+      obtainTransformAnimation(_shapes));
+
+  static List<Shape> parseRawShapes(
+          List rawShapes, double scale, double durationFrames) =>
+      rawShapes
+          .map((rawShape) => shapeFromMap(rawShape, scale, durationFrames))
           .toList();
 }
 
@@ -49,3 +60,21 @@ Shape shapeFromMap(dynamic rawShape, double scale, double durationFrames) {
   }
 }
 
+List<AnimationDrawable> shapesToAnimationDrawable(
+    Repaint repaint, List<Shape> shapes) {
+  return shapes
+      .map((shape) => shape.toDrawable(repaint))
+      .where((drawable) => drawable != null)
+      .toList();
+}
+
+TransformKeyframeAnimation obtainTransformAnimation(List<Shape> shapes) {
+  if (shapes.isNotEmpty) {
+    final last = shapes.last;
+    if (last is AnimatableTransform) {
+      return last.createAnimation();
+    }
+  }
+
+  return null;
+}

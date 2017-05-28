@@ -136,7 +136,7 @@ class AnimatableScaleValue extends BaseAnimatableValue<Offset, Offset> {
   static final AnimatableValueParser _parser =
       new AnimatableValueParser<Offset>();
 
-  AnimatableScaleValue() : super(Offset.zero, new Scene.empty());
+  AnimatableScaleValue() : super(const Offset(1.0, 1.0), new Scene.empty());
 
   AnimatableScaleValue.fromMap(dynamic map, double durationFrames)
       : super.fromKeyframeGroup(
@@ -181,7 +181,7 @@ class AnimatablePathValue extends BaseAnimatableValue<Offset, Offset> {
   factory AnimatablePathValue(
       [dynamic map, double scale, double durationFrames]) {
     if (map == null) {
-      return new AnimatablePathValue();
+      return new AnimatablePathValue._();
     }
 
     if (hasKeyframes(map)) {

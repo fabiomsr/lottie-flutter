@@ -4,6 +4,7 @@ import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/composition.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/drawing/elements/groups.dart';
+import 'package:Lotie_Flutter/src/elements/groups.dart';
 import 'package:Lotie_Flutter/src/layers.dart';
 import 'package:Lotie_Flutter/src/painting.dart';
 import 'package:Lotie_Flutter/src/elements/transforms.dart';
@@ -12,12 +13,11 @@ import 'package:flutter/painting.dart';
 
 import 'package:vector_math/vector_math_64.dart';
 
-
-BaseLayer layerForModel(Layer layer, LottieComposition composition,
-    double scale, Repaint repaint) {
+BaseLayer layerForModel(
+    Layer layer, LottieComposition composition, double scale, Repaint repaint) {
   switch (layer.type) {
     case LayerType.Shape:
-      return new ShapeLayer(layer,repaint);
+      return new ShapeLayer(layer, repaint);
     case LayerType.PreComp:
       return new CompositionLayer(composition, layer, repaint, scale);
     case LayerType.Solid:
@@ -35,7 +35,6 @@ BaseLayer layerForModel(Layer layer, LottieComposition composition,
 }
 
 abstract class BaseLayer implements Drawable {
-
   bool _visibility = true;
   BaseLayer _parent;
   List<BaseLayer> _parents;
@@ -53,7 +52,6 @@ abstract class BaseLayer implements Drawable {
   final MaskKeyframeAnimation _mask;
   final TransformKeyframeAnimation _transform;
   final List<BaseKeyframeAnimation<dynamic, dynamic>> _animations = new List();
-
 
   Layer get layerModel => _layerModel;
 
@@ -82,14 +80,14 @@ abstract class BaseLayer implements Drawable {
   }
 
   BaseLayer(this._layerModel, this._repaint)
-      : _transform = new TransformKeyframeAnimation(_layerModel.transform),
+      : _transform = _layerModel.transform.createAnimation(),
         _mask = new MaskKeyframeAnimation(
             _layerModel.masks == null ? const [] : _layerModel.masks) {
     _clearPaint.blendMode = BlendMode.clear;
     _maskPaint.blendMode = BlendMode.dstIn;
-    _mattePaint.blendMode =
-    _layerModel.matteType == MatteType.Invert ? BlendMode.dstOut : BlendMode
-        .dstIn;
+    _mattePaint.blendMode = _layerModel.matteType == MatteType.Invert
+        ? BlendMode.dstOut
+        : BlendMode.dstIn;
 
     _transform.addListener(onAnimationChanged);
     addAnimationsToLayer();
@@ -126,8 +124,8 @@ abstract class BaseLayer implements Drawable {
       return;
     }
 
-    final DoubleKeyframeAnimation inOutAnimation = new DoubleKeyframeAnimation(
-        _layerModel.inOutKeyframes);
+    final DoubleKeyframeAnimation inOutAnimation =
+        new DoubleKeyframeAnimation(_layerModel.inOutKeyframes);
 
     inOutAnimation.isDiscrete = true;
     inOutAnimation.addListener(() => _visibility = inOutAnimation.value == 1.0);
@@ -198,13 +196,14 @@ abstract class BaseLayer implements Drawable {
     canvas.restore();
   }
 
-
   void clearCanvas(Canvas canvas, Rect bounds) {
     // TODO: Does this happen in Flutter too?
     // IF we don't pad the clear draw, some phones leave a 1px border of the
     // graphics buffer.
-    canvas.drawRect(new Rect.fromLTRB(bounds.left - 1, bounds.top - 1,
-        bounds.right - 1, bounds.bottom - 1), _clearPaint);
+    canvas.drawRect(
+        new Rect.fromLTRB(bounds.left - 1, bounds.top - 1, bounds.right - 1,
+            bounds.bottom - 1),
+        _clearPaint);
   }
 
   void buildParentLayerListIfNeeded() {
@@ -214,6 +213,7 @@ abstract class BaseLayer implements Drawable {
 
     if (_parent == null) {
       _parents = const [];
+      return;
     }
 
     _parents = new List();
@@ -252,8 +252,8 @@ abstract class BaseLayer implements Drawable {
 
       switch (mask.mode) {
         case MaskMode.Subtract:
-        // If there is a subtract mask, the mask could potentially be the size
-        // of the entire canvas so we can't use the mask bounds
+          // If there is a subtract mask, the mask could potentially be the size
+          // of the entire canvas so we can't use the mask bounds
           return;
         case MaskMode.Add:
         default:
@@ -264,8 +264,9 @@ abstract class BaseLayer implements Drawable {
 
           // As we iterate through the masks, we want to calculate the union region
           // of the masks. We initialize the rect with the first mask.
-          maskBoundRect = i == 0 ? maskBoundRect : _minTopLeftMaxRightBottom(
-              maskBoundRect, tempMaskBoundRect);
+          maskBoundRect = i == 0
+              ? maskBoundRect
+              : _minTopLeftMaxRightBottom(maskBoundRect, tempMaskBoundRect);
       }
     }
   }
@@ -284,9 +285,10 @@ abstract class BaseLayer implements Drawable {
 
       switch (mask.mode) {
         case MaskMode.Subtract:
-        // PathFillType.inverseWinding is deprecated https://github.com/flutter/flutter/issues/5912
-        //_path.fillType = PathFillType.inverseWinding;
-          print("MaskMode.Subtract is not supported because PathFillType.inverseWinding is deprecated");
+          // PathFillType.inverseWinding is deprecated https://github.com/flutter/flutter/issues/5912
+          //_path.fillType = PathFillType.inverseWinding;
+          print(
+              "MaskMode.Subtract is not supported because PathFillType.inverseWinding is deprecated");
           break;
         case MaskMode.Add:
         default:
@@ -300,28 +302,25 @@ abstract class BaseLayer implements Drawable {
     canvas.restore();
   }
 
-  Rect _maxLeftTopMinRightBottom(Rect first, Rect second) =>
-      new Rect.fromLTRB(max(first.left, second.left),
-          max(first.top, second.top),
-          min(first.right, second.right),
-          min(first.bottom, second.bottom));
+  Rect _maxLeftTopMinRightBottom(Rect first, Rect second) => new Rect.fromLTRB(
+      max(first.left, second.left),
+      max(first.top, second.top),
+      min(first.right, second.right),
+      min(first.bottom, second.bottom));
 
-  Rect _minTopLeftMaxRightBottom(Rect first, Rect second) =>
-      new Rect.fromLTRB(min(first.left, second.left),
-          min(first.top, second.top),
-          max(first.right, second.right),
-          max(first.bottom, second.bottom));
+  Rect _minTopLeftMaxRightBottom(Rect first, Rect second) => new Rect.fromLTRB(
+      min(first.left, second.left),
+      min(first.top, second.top),
+      max(first.right, second.right),
+      max(first.bottom, second.bottom));
 
   Rect calculateBounds(Matrix4 parentMatrix);
 
-  void drawLayer(Canvas canvas, Size size, Matrix4 parentMatrix,
-      int parentAlpha);
-
+  void drawLayer(
+      Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha);
 }
 
-
 class SolidLayer extends BaseLayer {
-
   final Paint _paint = new Paint();
 
   SolidLayer(Layer layerModel, Repaint repaint) : super(layerModel, repaint) {
@@ -330,8 +329,8 @@ class SolidLayer extends BaseLayer {
   }
 
   @override
-  void drawLayer(Canvas canvas, Size size, Matrix4 parentMatrix,
-      int parentAlpha) {
+  void drawLayer(
+      Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
     if (layerModel.solidColor.alpha == 0) {
       return;
     }
@@ -346,9 +345,8 @@ class SolidLayer extends BaseLayer {
   }
 
   Rect calculateTransform(Matrix4 parentMatrix) {
-    Rect canvasBounds = new Rect.fromLTRB(
-        0.0, 0.0, _layerModel.solidWidth.toDouble(),
-        _layerModel.solidHeight.toDouble());
+    Rect canvasBounds = new Rect.fromLTRB(0.0, 0.0,
+        _layerModel.solidWidth.toDouble(), _layerModel.solidHeight.toDouble());
     Rect transformRect = MatrixUtils.transformRect(parentMatrix, canvasBounds);
     return transformRect;
   }
@@ -359,26 +357,28 @@ class SolidLayer extends BaseLayer {
   }
 
   @override
-  void addColorFilter(String layerName, String contentName,
-      ColorFilter colorFilter) {
+  void addColorFilter(
+      String layerName, String contentName, ColorFilter colorFilter) {
     _paint.colorFilter = colorFilter;
   }
 }
 
-
 class ShapeLayer extends BaseLayer {
-
   final DrawableGroup _contentGroup;
 
   ShapeLayer(Layer layerModel, Repaint repaint)
-      : _contentGroup = new DrawableGroup(layerModel.name, repaint, layerModel.shapes),
+      : _contentGroup = new DrawableGroup(
+            layerModel.name,
+            repaint,
+            shapesToAnimationDrawable(repaint, layerModel.shapes),
+            obtainTransformAnimation(layerModel.shapes)),
         super(layerModel, repaint) {
     _contentGroup.setContents(const [], const []);
   }
 
   @override
-  void drawLayer(Canvas canvas, Size size, Matrix4 parentMatrix,
-      int parentAlpha) {
+  void drawLayer(
+      Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
     _contentGroup.draw(canvas, size, parentMatrix, parentAlpha);
   }
 
@@ -388,27 +388,26 @@ class ShapeLayer extends BaseLayer {
   }
 
   @override
-  void addColorFilter(String layerName, String contentName,
-      ColorFilter colorFilter) {
+  void addColorFilter(
+      String layerName, String contentName, ColorFilter colorFilter) {
     _contentGroup.addColorFilter(layerName, contentName, colorFilter);
   }
 }
 
-
 class ImageLayer extends BaseLayer {
-
   final Paint _paint = new Paint();
   final double _density;
 
-  ImageLayer(Layer layerModel, Repaint repaint, this._density) : super(layerModel, repaint) {
+  ImageLayer(Layer layerModel, Repaint repaint, this._density)
+      : super(layerModel, repaint) {
     _paint
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.low; // bilinear interpolation
   }
 
   @override
-  void drawLayer(Canvas canvas, Size size, Matrix4 parentMatrix,
-      int parentAlpha) {
+  void drawLayer(
+      Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
     //TODO: fetch image from refId
     Image image = _getImage();
 
@@ -440,8 +439,8 @@ class ImageLayer extends BaseLayer {
   }
 
   @override
-  void addColorFilter(String layerName, String contentName,
-      ColorFilter colorFilter) {
+  void addColorFilter(
+      String layerName, String contentName, ColorFilter colorFilter) {
     _paint.colorFilter = colorFilter;
   }
 
@@ -449,16 +448,14 @@ class ImageLayer extends BaseLayer {
     //TODO: fetch image from refId
     return null;
   }
-
-
 }
 
 class NullLayer extends BaseLayer {
   NullLayer(Layer layerModel, Repaint repaint) : super(layerModel, repaint);
 
   @override
-  void addColorFilter(String layerName, String contentName,
-      ColorFilter colorFilter) {
+  void addColorFilter(
+      String layerName, String contentName, ColorFilter colorFilter) {
     // Do nothing
   }
 
@@ -468,28 +465,27 @@ class NullLayer extends BaseLayer {
   }
 
   @override
-  void drawLayer(Canvas canvas, Size size, Matrix4 parentMatrix,
-      int parentAlpha) {
+  void drawLayer(
+      Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
     // Do nothing
   }
 }
 
 class CompositionLayer extends BaseLayer {
-
   final List<BaseLayer> _layers = new List<BaseLayer>();
   bool _hasMatte;
   bool _hasMasks;
 
-  CompositionLayer(LottieComposition composition, Layer layerModel, Repaint repaint,
-      double scale)
+  CompositionLayer(LottieComposition composition, Layer layerModel,
+      Repaint repaint, double scale)
       : super(layerModel, repaint) {
-
-    List<Layer> layerModels = composition.preComps[layerModel.refId];
+    List<Layer> layerModels = composition.preComps[layerModel.refId] ?? composition.layers;
     Map<int, BaseLayer> layerMap = new Map<int, BaseLayer>();
 
     for (int i = layerModels.length - 1; i >= 0; i--) {
       Layer currentLayerModel = layerModels[i];
-      BaseLayer layer = layerForModel(currentLayerModel, composition, scale, repaint);
+      BaseLayer layer =
+          layerForModel(currentLayerModel, composition, scale, repaint);
 
       if (layer == null) {
         continue;
@@ -497,7 +493,7 @@ class CompositionLayer extends BaseLayer {
 
       layerMap[layer.layerModel.id] = layer;
 
-      if (_matteLayer == null) {
+      if (_matteLayer != null) {
         _matteLayer._matteLayer = layer;
         _matteLayer = null;
       } else {
@@ -521,10 +517,9 @@ class CompositionLayer extends BaseLayer {
     });
   }
 
-
   @override
-  void drawLayer(Canvas canvas, Size size, Matrix4 parentMatrix,
-      int parentAlpha) {
+  void drawLayer(
+      Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
     // TODO: Open issue about SkCanvas::getClipBounds
     // Rect canvasClipBounds = canvas.getClipBounds();
 
@@ -532,8 +527,8 @@ class CompositionLayer extends BaseLayer {
         0.0, 0.0, layerModel.preCompWidth, layerModel.preCompHeight);
     Rect transformedRect = MatrixUtils.transformRect(parentMatrix, newClipRect);
 
-    for (int i = _layers.length - 1; i >= 0 ; i--) {
-      if(!newClipRect.isEmpty) {
+    for (int i = _layers.length - 1; i >= 0; i--) {
+      if (!newClipRect.isEmpty) {
         canvas.clipRect(newClipRect);
       }
 
@@ -542,7 +537,7 @@ class CompositionLayer extends BaseLayer {
 
     //if (!originalClipRect.isEmpty()) {
     // TODO: Open issue about Replace option
-      //canvas.clipRect(canvasClipBounds, Region.Op.REPLACE);
+    //canvas.clipRect(canvasClipBounds, Region.Op.REPLACE);
     //}
   }
 
@@ -553,22 +548,22 @@ class CompositionLayer extends BaseLayer {
       BaseLayer content = _layers[i];
       Rect contentBounds = content.getBounds(parentMatrix);
 
-      layerBounds = layerBounds.isEmpty ? contentBounds
+      layerBounds = layerBounds.isEmpty
+          ? contentBounds
           : _minTopLeftMaxRightBottom(layerBounds, contentBounds);
     }
 
     return layerBounds;
   }
 
-
   @override
-  void addColorFilter(String layerName, String contentName,
-      ColorFilter colorFilter) {
-    for(var layer in _layers) {
+  void addColorFilter(
+      String layerName, String contentName, ColorFilter colorFilter) {
+    for (var layer in _layers) {
       final String name = layer.layerModel.name;
-      if(layerName == null) {
+      if (layerName == null) {
         layer.addColorFilter(null, null, colorFilter);
-      } else if(name == layerName){
+      } else if (name == layerName) {
         layer.addColorFilter(layerName, contentName, colorFilter);
       }
     }
@@ -584,10 +579,10 @@ class CompositionLayer extends BaseLayer {
   }
 
   bool get hasMasks {
-    if(_hasMasks == null) {
+    if (_hasMasks == null) {
       for (int i = _layers.length - 1; i >= 0; i--) {
         BaseLayer layer = _layers[i];
-        if(layer is ShapeLayer && layer.hasMasksOnThisLayer) {
+        if (layer is ShapeLayer && layer.hasMasksOnThisLayer) {
           _hasMasks = true;
           return true;
         }
@@ -607,7 +602,7 @@ class CompositionLayer extends BaseLayer {
 
       for (int i = _layers.length - 1; i >= 0; i--) {
         BaseLayer layer = _layers[i];
-        if(layer.hasMatteOnThisLayer){
+        if (layer.hasMatteOnThisLayer) {
           _hasMatte = true;
           return true;
         }
@@ -619,4 +614,3 @@ class CompositionLayer extends BaseLayer {
     return _hasMatte;
   }
 }
-

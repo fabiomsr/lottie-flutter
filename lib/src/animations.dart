@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:Lotie_Flutter/src/mathutils.dart';
 import 'package:Lotie_Flutter/src/painting.dart' show Mask;
 import 'package:Lotie_Flutter/src/parsers/parsers.dart';
@@ -55,7 +56,8 @@ abstract class BaseKeyframeAnimation<K, A> {
       return cachedKeyframe;
     }
 
-    if (_progress < scene.firstKeyframe.startProgress) {
+    //Keyframe<K> cachedKeyframe = scene.firstKeyframe;
+    if (_progress <= scene.firstKeyframe.startProgress) {
       return cachedKeyframe = scene.firstKeyframe;
     }
 
@@ -82,7 +84,8 @@ abstract class BaseKeyframeAnimation<K, A> {
     double progressIntoFrame = _progress - keyframe.startProgress;
     double keyframeProgress = keyframe.endProgress - keyframe.startProgress;
 
-    return keyframe.curve.transform(progressIntoFrame / keyframeProgress);
+    final transformValue = min(max(progressIntoFrame / keyframeProgress, 0.0), 1.0);
+    return keyframe.curve.transform(transformValue);
   }
 
 
@@ -117,6 +120,11 @@ class StaticKeyframeAnimation<T> extends KeyframeAnimation<T> {
   @override
   set progress(double progress) {
     // Do nothing
+  }
+
+  @override
+  T get value {
+    return _initialValue;
   }
 
   @override

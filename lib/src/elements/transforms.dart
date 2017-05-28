@@ -25,14 +25,18 @@ class AnimatableTransform extends Shape {
   AnimatableIntegerValue get opacity => _opacity;
 
   AnimatableTransform._(this._anchorPoint, this._position, this._scale,
-      this._rotation, this._opacity): super.fromMap({});
+      this._rotation, this._opacity)
+      : super.fromMap({});
 
-
-  factory AnimatableTransform([dynamic map, double scale, double durationFrames]) {
+  factory AnimatableTransform(
+      [dynamic map, double scale, double durationFrames]) {
     if (map == null) {
-      return new AnimatableTransform._(new AnimatablePathValue(),
-          new AnimatablePathValue(), new AnimatableScaleValue(),
-          new AnimatableDoubleValue(), new AnimatableIntegerValue());
+      return new AnimatableTransform._(
+          new AnimatablePathValue(),
+          new AnimatablePathValue(),
+          new AnimatableScaleValue(),
+          new AnimatableDoubleValue(),
+          new AnimatableIntegerValue());
     }
 
     AnimatablePathValue anchorPointTransform;
@@ -44,57 +48,62 @@ class AnimatableTransform extends Shape {
     var rawAnchorPoint = map['a'];
     if (map != null) {
       anchorPointTransform =
-      new AnimatablePathValue(rawAnchorPoint['k'], scale);
+          new AnimatablePathValue(rawAnchorPoint['k'], scale, durationFrames);
     } else {
       // Cameras don't have an anchor point property. Although we don't support
       // then, at least we won't crash
       print(
           "Layer has no transform property. You may be using an unsupported layer"
-              "type such as a camera");
+          "type such as a camera");
       anchorPointTransform = new AnimatablePathValue(null, scale);
     }
 
-
-    positionTransform = parsePathOrSplitDimensionPath(map, scale, durationFrames);
+    positionTransform =
+        parsePathOrSplitDimensionPath(map, scale, durationFrames);
     if (positionTransform == null) {
       _throwMissingTransform("position");
     }
 
     var rawScale = map['s'];
-    scaleTransform =
-    rawScale is Map ? new AnimatableScaleValue.fromMap(rawScale, durationFrames)
-    // Somehow some community animations don't have scale in the transform
+    scaleTransform = rawScale is Map
+        ? new AnimatableScaleValue.fromMap(rawScale, durationFrames)
+        // Somehow some community animations don't have scale in the transform
         : new AnimatableScaleValue();
-
 
     var rawRotation = map['r'] ?? map['rz'];
     if (rawRotation is Map) {
-      rotationTransform = new AnimatableDoubleValue.fromMap(rawRotation, 1.0, durationFrames);
+      rotationTransform =
+          new AnimatableDoubleValue.fromMap(rawRotation, 1.0, durationFrames);
     } else {
       _throwMissingTransform("rotation");
     }
 
     var rawOpacity = map['o'];
-    opacityTransform =
-    rawOpacity is Map
+    opacityTransform = rawOpacity is Map
         ? new AnimatableIntegerValue.fromMap(rawOpacity, durationFrames)
         : new AnimatableIntegerValue(100);
 
-    return new AnimatableTransform._(
-        anchorPointTransform, positionTransform, scaleTransform,
-        rotationTransform, opacityTransform);
+    return new AnimatableTransform._(anchorPointTransform, positionTransform,
+        scaleTransform, rotationTransform, opacityTransform);
+  }
+
+  TransformKeyframeAnimation createAnimation() {
+    return new TransformKeyframeAnimation(
+        _anchorPoint.createAnimation(),
+        _position.createAnimation(),
+        _scale.createAnimation(),
+        _rotation.createAnimation(),
+        _opacity.createAnimation());
   }
 
   static void _throwMissingTransform(String missingProperty) {
     throw new ArgumentError("Missing trasnform $missingProperty");
   }
-
 }
-
 
 class TransformKeyframeAnimation {
   final Matrix4 _matrix = new Matrix4.identity();
-  
+
   final BaseKeyframeAnimation<dynamic, Offset> _anchorPoint;
   final BaseKeyframeAnimation<dynamic, Offset> _position;
   final BaseKeyframeAnimation<dynamic, Offset> _scale;
@@ -106,46 +115,40 @@ class TransformKeyframeAnimation {
   BaseKeyframeAnimation<dynamic, Offset> get scale => _scale;
   BaseKeyframeAnimation<dynamic, double> get rotation => _rotation;
   BaseKeyframeAnimation<dynamic, int> get opacity => _opacity;
-  
+
   Matrix4 get matrix {
     _matrix.setIdentity();
     final Offset position = _position.value;
-    if(position.dx != 0 && position.dy != 0) {
-      matrix.leftTranslate(position.dx, position.dy);
+    if (position.dx != 0 && position.dy != 0) {
+      _matrix.leftTranslate(position.dx, position.dy);
     }
 
     final double rotation = _rotation.value;
-    if(rotation != 0) {
-      leftRotate(matrix, rotation);
+    if (rotation != 0) {
+      leftRotate(_matrix, rotation);
     }
 
     final Offset scale = _scale.value;
-    if(scale.dx != 1 || scale.dy != 1) {
-      leftScale(matrix, scale.dx, scale.dy);
+    if (scale.dx != 1 || scale.dy != 1) {
+      leftScale(_matrix, scale.dx, scale.dy);
     }
 
     final Offset anchorPoint = _anchorPoint.value;
-    if(anchorPoint.dx != 0 || anchorPoint.dy != 0) {
-      matrix.leftTranslate(anchorPoint.dx, anchorPoint.dy);
+    if (anchorPoint.dx != 0 || anchorPoint.dy != 0) {
+      _matrix.leftTranslate(anchorPoint.dx, anchorPoint.dy);
     }
 
-    return matrix;
+    return _matrix;
   }
-  
-  TransformKeyframeAnimation(AnimatableTransform animatableTransform) 
-      : _anchorPoint = animatableTransform.anchorPoint.createAnimation(),
-        _position = animatableTransform.position.createAnimation(),
-        _scale = animatableTransform.scale.createAnimation(),
-        _rotation = animatableTransform.rotation.createAnimation(),
-        _opacity = animatableTransform.opacity.createAnimation();
-  
-  
-  void addListener(OnValueChanged onValueChanged){
+
+  TransformKeyframeAnimation(this._anchorPoint, this._position, this._scale,
+      this._rotation, this._opacity);
+
+  void addListener(OnValueChanged onValueChanged) {
     _anchorPoint.addListener(onValueChanged);
     _position.addListener(onValueChanged);
     _scale.addListener(onValueChanged);
     _rotation.addListener(onValueChanged);
     _opacity.addListener(onValueChanged);
   }
-  
 }
