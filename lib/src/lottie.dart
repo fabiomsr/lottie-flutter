@@ -42,7 +42,6 @@ class _LottieState extends State<Lottie> with SingleTickerProviderStateMixin {
   }
 
   void _handleChange() {
-    print("Progress: ${_animation.value}");
     setState(() {
       _compositionLayer.progress = _animation.value;
     });
@@ -50,8 +49,9 @@ class _LottieState extends State<Lottie> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    //_compositionLayer.progress = 0.0;
     return new CustomPaint(
-        painter: new LottiePainter(_compositionLayer), size: const Size(200.0, 200.0));
+        painter: new LottiePainter(_compositionLayer), size: const Size(1900.0, 700.0));
   }
 
   @override
@@ -74,7 +74,7 @@ class LottiePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final matrix = new Matrix4.identity();
-    leftScale(matrix, _scale, _scale);
+    preScale(matrix, _scale, _scale);
 
     _compositionLayer.draw(canvas, size, matrix, _alpha);
   }
