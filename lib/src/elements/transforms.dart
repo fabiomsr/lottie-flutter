@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:Lotie_Flutter/src/animatables.dart';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/elements/shapes.dart';
@@ -118,25 +119,19 @@ class TransformKeyframeAnimation {
 
   Matrix4 get matrix {
     _matrix.setIdentity();
-    final Offset position = _position.value;
-    if (position.dx != 0 && position.dy != 0) {
-      _matrix.leftTranslate(position.dx, position.dy);
-    }
+    final position = _position.value;
+    preTranslate(_matrix, position.dx, position.dy);
 
-    final double rotation = _rotation.value;
+    final rotation = _rotation.value;
     if (rotation != 0) {
-      leftRotate(_matrix, rotation);
+      leftRotate(_matrix, rotation * (PI / 180.0));
     }
 
-    final Offset scale = _scale.value;
-    if (scale.dx != 1 || scale.dy != 1) {
-      leftScale(_matrix, scale.dx, scale.dy);
-    }
+    final scale = _scale.value;
+    preScale(_matrix, scale.dx, scale.dy);
 
-    final Offset anchorPoint = _anchorPoint.value;
-    if (anchorPoint.dx != 0 || anchorPoint.dy != 0) {
-      _matrix.leftTranslate(anchorPoint.dx, anchorPoint.dy);
-    }
+    final anchorPoint = _anchorPoint.value;
+    preTranslate(_matrix, -anchorPoint.dx, -anchorPoint.dy);
 
     return _matrix;
   }

@@ -250,23 +250,24 @@ class PathKeyframeAnimation extends KeyframeAnimation<Offset> {
 
   @override
   Offset getValue(Keyframe<Offset> keyframe, double keyframeProgress) {
-    PathKeyframe _pathKeyframe = keyframe;
+    PathKeyframe pathKeyframe = keyframe;
 
-    if (_pathKeyframe.path == null) {
+    if (pathKeyframe.path == null) {
       return keyframe.startValue;
     }
 
 
     //TODO: No PathMeasure in flutter sdk :(
-    if (_pathKeyframe != _pathKeyframe) {
+    if (_pathMeasureKeyframe != pathKeyframe) {
       // _pathMeasure = new PathMeasure(_pathKeyframe._path, false);
       _pathMeasureKeyframe = keyframe;
     }
 
     //pathMeasure.getPosTan(keyframeProgress * pathMeasure.length, pos, null);
     //point.set(pos[0],pos[1]);
-    //return point;
-    return const Offset(0.0, 0.0);
+    //return point;
+    //return const Offset(0.0, 0.0);
+    return keyframe.startValue;
   }
 }
 

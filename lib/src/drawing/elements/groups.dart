@@ -92,7 +92,8 @@ class DrawableGroup extends AnimationDrawable implements PathContent {
 
   @override
   void draw(Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
-    Matrix4 matrix = new Matrix4.identity();
+    Matrix4 matrix = new Matrix4.fromFloat64List(parentMatrix.storage);
+
     int alpha = parentAlpha;
     if(_transformAnimation != null) {
       matrix.multiply(_transformAnimation.matrix);
