@@ -13,16 +13,12 @@ Lottie is a mobile library that parses [Adobe After Effects](http://www.adobe.co
 
 ### Waiting for...
 
-    - [ ] PathMeasure [#10428]  ★★★★★
+    - [ ] PathMeasure [#10428](https://github.com/flutter/flutter/issues/10428)  ★★★★★
     - [ ] Path.add(path, matrix) ★★★★★
-    - [ ] Path JoinType    [#7199]  ★★★
+    - [ ] Path JoinType    [#7199](https://github.com/flutter/flutter/issues/7199)  ★★★
     - [ ] Path.computeBounds   ★★
     - [ ] Path Operations      ★★
-    - [ ] DashPathEffect [#9641]  ★
+    - [ ] DashPathEffect [#9641](https://github.com/flutter/flutter/issues/9641)  ★
     - [ ] Canvas.getClipBounds   ★
     - [ ] Canvas.clipRect(_, Region.Op) ★
 
-
-[#10428]: https://github.com/flutter/flutter/issues/10428
-[#7199]: https://github.com/flutter/flutter/issues/7199
-[#9641]: https://github.com/flutter/flutter/issues/9641
