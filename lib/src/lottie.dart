@@ -66,7 +66,7 @@ class LottiePainter extends CustomPainter {
   final CompositionLayer _compositionLayer;
   final double _scale;
   final int _alpha;
-
+  
   LottiePainter(this._compositionLayer, { double scale: 1.0, int alpha: 255 } )
     : _scale = scale,
       _alpha = alpha;

@@ -102,7 +102,7 @@ Path applyScaleTrimIfNeeded(
   return applyTrimPathIfNeeded(path, start / 100.0, end / 100.0, offset / 100.0);
 }
 
-// TODO: wait for SkPathMeasure
+// TODO: wait for SkPathMeasure https://github.com/flutter/flutter/issues/10428
 Path applyTrimPathIfNeeded(Path path, double start, double end, double offset) {
   return path;
 }

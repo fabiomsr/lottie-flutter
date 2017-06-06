@@ -18,7 +18,7 @@ class PathGroup {
 }
 
 class StrokeDrawable extends AnimationDrawable {
-  //TODO: PathMeasure
+  //TODO: PathMeasure https://github.com/flutter/flutter/issues/10428
   //final PathMeasure pm = new PathMeasure();
   final List<PathGroup> _pathGroups = [];
   final Paint _paint = new Paint();
@@ -137,7 +137,7 @@ class StrokeDrawable extends AnimationDrawable {
       addPathToPath(path, pathGroup._paths[i].path, parentMatrix);
     }
 
-    //TODO: PathMeasure
+    //TODO: PathMeasure https://github.com/flutter/flutter/issues/10428
     var totalLength;
 //    pm.setPath(path, false);
 //    double totalLength = pm.getLength();
@@ -155,7 +155,7 @@ class StrokeDrawable extends AnimationDrawable {
       final trimPath = pathGroup._paths[j].path;
       trimPath.transform(parentMatrix.storage);
 
-      //TODO: PathMeasure
+      //TODO: PathMeasure https://github.com/flutter/flutter/issues/10428
       var length = 0.0;
       //pm.setPath(trimPathPath, false);
       //double length = pm.getLength();

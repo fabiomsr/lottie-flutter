@@ -243,7 +243,7 @@ class PathKeyframeAnimation extends KeyframeAnimation<Offset> {
 
   PathKeyframe _pathMeasureKeyframe;
 
-  // TODO: Open issue about SkPathMeasure
+  // TODO: SkPathMeasure https://github.com/flutter/flutter/issues/10428
   //PathMeasure _pathMeasure;
 
   PathKeyframeAnimation(Scene<Offset> scene) : super(scene);
@@ -265,7 +265,7 @@ class PathKeyframeAnimation extends KeyframeAnimation<Offset> {
 
     //pathMeasure.getPosTan(keyframeProgress * pathMeasure.length, pos, null);
     //point.set(pos[0],pos[1]);
-    //return point;
+    //return point;
     //return const Offset(0.0, 0.0);
     return keyframe.startValue;
   }
