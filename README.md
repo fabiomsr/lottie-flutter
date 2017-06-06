@@ -9,7 +9,7 @@ Lottie is a mobile library that parses [Adobe After Effects](http://www.adobe.co
 
 ### Current status
 
-![Emoji shock] (art/emoji_shock.png)
+![Emoji shock](art/emoji_shock.png)
 
 ### Waiting for...
 
