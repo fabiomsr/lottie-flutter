@@ -1,13 +1,12 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:Lotie_Flutter/src/animatables.dart';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/drawing/elements/paths.dart';
-import 'package:Lotie_Flutter/src/elements/paths.dart';
 import 'package:Lotie_Flutter/src/mathutils.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
-import 'package:flutter/painting.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 class PathGroup {
@@ -31,7 +30,7 @@ class StrokeDrawable extends AnimationDrawable {
   StrokeDrawable(
       String name,
       StrokeCap strokeCap,
-      JoinType strokeJoin,
+      StrokeJoin strokeJoin,
       List<AnimatableDoubleValue> dashPatternValues,
       this._repaint,
       this._opacityAnimation,
@@ -262,7 +261,7 @@ class ShapeStrokeDrawable extends StrokeDrawable {
   ShapeStrokeDrawable(
       String name,
       StrokeCap strokeCap,
-      JoinType strokeJoin,
+      StrokeJoin strokeJoin,
       List<AnimatableDoubleValue> dashPatternValues,
       Repaint repaint,
       BaseKeyframeAnimation<dynamic, int> opacityAnimation,
@@ -296,7 +295,7 @@ class GradientStrokeDrawable extends StrokeDrawable {
   GradientStrokeDrawable(
       String name,
       StrokeCap strokeCap,
-      JoinType strokeJoin,
+      StrokeJoin strokeJoin,
       List<AnimatableDoubleValue> dashPatternValues,
       Repaint repaint,
       BaseKeyframeAnimation<dynamic, int> opacityAnimation,

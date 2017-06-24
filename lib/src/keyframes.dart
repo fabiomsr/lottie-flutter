@@ -1,7 +1,7 @@
-import 'package:Lotie_Flutter/src/values.dart';
+
+import 'dart:ui';
 import 'package:Lotie_Flutter/src/parsers/parsers.dart';
 import 'package:flutter/animation.dart' show Curve, Curves, Cubic;
-import 'package:flutter/painting.dart' show Offset, Path;
 
 class Keyframe<T> {
   static const double MAX_CP_VALUE = 100.0;

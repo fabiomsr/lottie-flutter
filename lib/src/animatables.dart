@@ -1,9 +1,9 @@
+import 'dart:ui' show Color, Offset, Path;
 import 'package:Lotie_Flutter/src/values.dart';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
 import 'package:Lotie_Flutter/src/parsers/parsers.dart';
-import 'package:flutter/painting.dart' show Color, Offset, Path;
-import 'package:vector_math/vector_math_64.dart';
+
 
 abstract class AnimatableValue<A> {
   BaseKeyframeAnimation<dynamic, A> createAnimation();

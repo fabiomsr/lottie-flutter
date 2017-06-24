@@ -1,10 +1,11 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:Lotie_Flutter/src/animations.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/drawing/elements/paths.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
 import 'package:Lotie_Flutter/src/values.dart';
-import 'package:flutter/painting.dart';
+
 
 abstract class _PolygonDrawable extends AnimationDrawable
     implements PathContent {

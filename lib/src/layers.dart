@@ -1,3 +1,4 @@
+import 'dart:ui' show Color;
 import 'package:Lotie_Flutter/src/elements/groups.dart';
 import 'package:Lotie_Flutter/src/elements/shapes.dart';
 import 'package:Lotie_Flutter/src/keyframes.dart';
@@ -6,8 +7,8 @@ import 'package:Lotie_Flutter/src/painting.dart';
 import 'package:Lotie_Flutter/src/parsers/parsers.dart';
 import 'package:Lotie_Flutter/src/elements/transforms.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
-import 'package:flutter/painting.dart' show Color;
-import 'package:flutter/rendering.dart';
+
+
 
 
 enum LayerType { PreComp, Solid, Image, Null, Shape, Text, Unknown }

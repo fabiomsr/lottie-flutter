@@ -1,12 +1,11 @@
 import 'dart:math';
 import 'dart:ui';
-import 'package:Lotie_Flutter/src/animations.dart';
+
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/drawing/elements/paths.dart';
-import 'package:Lotie_Flutter/src/elements/shapes.dart';
 import 'package:Lotie_Flutter/src/elements/transforms.dart';
 import 'package:Lotie_Flutter/src/utils.dart';
-import 'package:Lotie_Flutter/src/values.dart';
+
 import 'package:vector_math/vector_math_64.dart';
 
 class DrawableGroup extends AnimationDrawable implements PathContent {

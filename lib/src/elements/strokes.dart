@@ -1,3 +1,4 @@
+import 'dart:ui' show StrokeCap, StrokeJoin;
 import 'package:Lotie_Flutter/src/animatables.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/drawing/elements/strokes.dart';
@@ -5,12 +6,10 @@ import 'package:Lotie_Flutter/src/elements/shapes.dart';
 
 import 'package:Lotie_Flutter/src/parsers/element_parsers.dart';
 import 'package:Lotie_Flutter/src/values.dart';
-import 'package:flutter/painting.dart' show StrokeCap;
 
 abstract class Stroke extends Shape {
   final StrokeCap _capType;
-  // TODO: issue Paint.Join https://github.com/flutter/flutter/issues/7199
-  final JoinType _joinType;
+  final StrokeJoin _joinType;
   final LineDashGroup _lineDashGroup;
   final AnimatableDoubleValue _width;
   final AnimatableIntegerValue _opacity;

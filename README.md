@@ -15,7 +15,7 @@ Lottie is a mobile library that parses [Adobe After Effects](http://www.adobe.co
 
     - [ ] PathMeasure [#10428]  ★★★★★
     - [ ] Path.add(path, matrix) ★★★★★
-    - [ ] Path JoinType    [#7199]  ★★★
+    - [x] Path JoinType    [#7199]  ★★★
     - [ ] Path.computeBounds   ★★
     - [ ] Path Operations      ★★
     - [ ] DashPathEffect [#9641]  ★

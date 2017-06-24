@@ -1,8 +1,9 @@
 import 'dart:ui' as ui;
 
+import 'dart:ui';
 import 'package:Lotie_Flutter/src/images.dart';
 import 'package:Lotie_Flutter/src/layers.dart';
-import 'package:flutter/painting.dart' show Rect;
+
 
 int parseStartFrame(dynamic map) => map['ip'] ?? 0.0;
 

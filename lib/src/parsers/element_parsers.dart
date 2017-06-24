@@ -1,6 +1,6 @@
+import 'dart:ui';
 import 'package:Lotie_Flutter/src/animatables.dart';
 import 'package:Lotie_Flutter/src/values.dart';
-import 'package:flutter/painting.dart' show Offset, PathFillType, StrokeCap;
 
 String parseName(dynamic map) => map['nm'];
 
@@ -59,7 +59,7 @@ AnimatableDoubleValue parseInnerRoundness(dynamic map, double durationFrames) =>
 
 parseCapType(dynamic map) => StrokeCap.values[map['lc'] - 1];
 
-JoinType parseJoinType(dynamic map) => JoinType.values[map['lj'] - 1];
+StrokeJoin parseJoinType(dynamic map) => StrokeJoin.values[map['lj'] - 1];
 
 GradientType parseGradientType(dynamic map) =>
     map['t'] == null || map['t'] == 1

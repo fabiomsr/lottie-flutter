@@ -4,7 +4,6 @@ import 'package:collection/collection.dart' show IterableEquality;
 import 'package:flutter/painting.dart' as paint show Offset, Color;
 import 'package:flutter/painting.dart' show hashValues, hashList;
 
-enum JoinType { Miter, Round, Bevel }
 enum GradientType { Linear, Radial }
 enum ShapeTrimPathType { Simultaneously, Individually }
 enum MergePathsMode {Merge, Add, Subtract, Intersect, ExcludeIntersections }

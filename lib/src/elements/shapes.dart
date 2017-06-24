@@ -1,9 +1,10 @@
+import 'dart:ui';
 import 'package:Lotie_Flutter/src/animatables.dart';
 import 'package:Lotie_Flutter/src/drawing/drawing.dart';
 import 'package:Lotie_Flutter/src/drawing/elements/shapes.dart';
 import 'package:Lotie_Flutter/src/parsers/element_parsers.dart';
 import 'package:Lotie_Flutter/src/values.dart';
-import 'package:flutter/painting.dart';
+
 
 abstract class Shape {
   final String _name;
