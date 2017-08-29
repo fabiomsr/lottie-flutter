@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
 import 'dart:ui';
-import 'package:Lotie_Flutter/src/images.dart';
-import 'package:Lotie_Flutter/src/layers.dart';
+import 'package:lottie_flutter/src/images.dart';
+import 'package:lottie_flutter/src/layers.dart';
 
 
 int parseStartFrame(dynamic map) => map['ip'] ?? 0.0;

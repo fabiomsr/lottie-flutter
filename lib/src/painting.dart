@@ -1,4 +1,4 @@
-import 'package:Lotie_Flutter/src/animatables.dart';
+import 'package:lottie_flutter/src/animatables.dart';
 
 
 enum MaskMode { Add, Subtract, Intersect, Unknown }

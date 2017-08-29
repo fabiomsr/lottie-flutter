@@ -6,8 +6,4 @@
 .DS_Store
 /build
 /captures
-PluginRegistry.java
-
-/gradle
-/gradlew
-/gradlew.bat
+GeneratedPluginRegistrant.java

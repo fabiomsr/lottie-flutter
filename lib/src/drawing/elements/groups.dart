@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:Lotie_Flutter/src/drawing/drawing.dart';
-import 'package:Lotie_Flutter/src/drawing/elements/paths.dart';
-import 'package:Lotie_Flutter/src/elements/transforms.dart';
-import 'package:Lotie_Flutter/src/utils.dart';
+import 'package:lottie_flutter/src/drawing/drawing.dart';
+import 'package:lottie_flutter/src/drawing/elements/paths.dart';
+import 'package:lottie_flutter/src/elements/transforms.dart';
+import 'package:lottie_flutter/src/utils.dart';
 
 import 'package:vector_math/vector_math_64.dart';
 

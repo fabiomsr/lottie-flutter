@@ -5,9 +5,9 @@
 // https://androidstudygroup.slack.com/archives/animation/p1476461064000335
 
 import 'dart:math';
-import 'package:Lotie_Flutter/src/animations.dart';
-import 'package:Lotie_Flutter/src/mathutils.dart';
-import 'package:Lotie_Flutter/src/values.dart';
+import 'package:lottie_flutter/src/animations.dart';
+import 'package:lottie_flutter/src/mathutils.dart';
+import 'package:lottie_flutter/src/values.dart';
 import 'package:flutter/painting.dart';
 import 'package:vector_math/vector_math_64.dart';
 

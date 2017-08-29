@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:Lotie_Flutter/src/animatables.dart';
+import 'package:lottie_flutter/src/animatables.dart';
 import 'package:test/test.dart';
 
 void main() {
