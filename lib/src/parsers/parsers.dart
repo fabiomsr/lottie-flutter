@@ -1,7 +1,7 @@
 import 'dart:ui';
-import 'package:Lotie_Flutter/src/mathutils.dart';
+import 'package:lottie_flutter/src/mathutils.dart';
 
-import 'package:Lotie_Flutter/src/values.dart';
+import 'package:lottie_flutter/src/values.dart';
 
 
 

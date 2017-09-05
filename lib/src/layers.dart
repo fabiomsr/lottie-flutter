@@ -1,12 +1,12 @@
 import 'dart:ui' show Color;
-import 'package:Lotie_Flutter/src/elements/groups.dart';
-import 'package:Lotie_Flutter/src/elements/shapes.dart';
-import 'package:Lotie_Flutter/src/keyframes.dart';
-import 'package:Lotie_Flutter/src/painting.dart';
+import 'package:lottie_flutter/src/elements/groups.dart';
+import 'package:lottie_flutter/src/elements/shapes.dart';
+import 'package:lottie_flutter/src/keyframes.dart';
+import 'package:lottie_flutter/src/painting.dart';
 
-import 'package:Lotie_Flutter/src/parsers/parsers.dart';
-import 'package:Lotie_Flutter/src/elements/transforms.dart';
-import 'package:Lotie_Flutter/src/utils.dart';
+import 'package:lottie_flutter/src/parsers/parsers.dart';
+import 'package:lottie_flutter/src/elements/transforms.dart';
+import 'package:lottie_flutter/src/utils.dart';
 
 
 

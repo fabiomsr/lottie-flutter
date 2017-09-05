@@ -1,5 +1,5 @@
-import 'package:Lotie_Flutter/src/mathutils.dart';
-import 'package:Lotie_Flutter/src/utils.dart';
+import 'package:lottie_flutter/src/mathutils.dart';
+import 'package:lottie_flutter/src/utils.dart';
 import 'package:collection/collection.dart' show IterableEquality;
 import 'package:flutter/painting.dart' as paint show Offset, Color;
 import 'package:flutter/painting.dart' show hashValues, hashList;

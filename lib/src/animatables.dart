@@ -1,8 +1,8 @@
 import 'dart:ui' show Color, Offset, Path;
-import 'package:Lotie_Flutter/src/values.dart';
-import 'package:Lotie_Flutter/src/animations.dart';
-import 'package:Lotie_Flutter/src/keyframes.dart';
-import 'package:Lotie_Flutter/src/parsers/parsers.dart';
+import 'package:lottie_flutter/src/values.dart';
+import 'package:lottie_flutter/src/animations.dart';
+import 'package:lottie_flutter/src/keyframes.dart';
+import 'package:lottie_flutter/src/parsers/parsers.dart';
 
 
 abstract class AnimatableValue<A> {

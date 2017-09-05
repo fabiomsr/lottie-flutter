@@ -1,10 +1,10 @@
-import 'package:Lotie_Flutter/src/drawing/drawing.dart';
-import 'package:Lotie_Flutter/src/drawing/elements/groups.dart';
-import 'package:Lotie_Flutter/src/elements/fills.dart';
-import 'package:Lotie_Flutter/src/elements/paths.dart';
-import 'package:Lotie_Flutter/src/elements/shapes.dart';
-import 'package:Lotie_Flutter/src/elements/strokes.dart';
-import 'package:Lotie_Flutter/src/elements/transforms.dart';
+import 'package:lottie_flutter/src/drawing/drawing.dart';
+import 'package:lottie_flutter/src/drawing/elements/groups.dart';
+import 'package:lottie_flutter/src/elements/fills.dart';
+import 'package:lottie_flutter/src/elements/paths.dart';
+import 'package:lottie_flutter/src/elements/shapes.dart';
+import 'package:lottie_flutter/src/elements/strokes.dart';
+import 'package:lottie_flutter/src/elements/transforms.dart';
 
 class ShapeGroup extends Shape {
   final List<Shape> _shapes;

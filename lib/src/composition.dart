@@ -1,6 +1,6 @@
-import 'package:Lotie_Flutter/src/images.dart';
-import 'package:Lotie_Flutter/src/layers.dart';
-import 'package:Lotie_Flutter/src/parsers/composition_parsers.dart';
+import 'package:lottie_flutter/src/images.dart';
+import 'package:lottie_flutter/src/layers.dart';
+import 'package:lottie_flutter/src/parsers/composition_parsers.dart';
 import 'package:flutter/painting.dart';
 import 'dart:ui' as ui;
 

@@ -1,7 +1,7 @@
-import 'package:Lotie_Flutter/src/composition.dart';
-import 'package:Lotie_Flutter/src/drawing/drawing_layers.dart';
-import 'package:Lotie_Flutter/src/layers.dart';
-import 'package:Lotie_Flutter/src/mathutils.dart';
+import 'package:lottie_flutter/src/composition.dart';
+import 'package:lottie_flutter/src/drawing/drawing_layers.dart';
+import 'package:lottie_flutter/src/layers.dart';
+import 'package:lottie_flutter/src/mathutils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 

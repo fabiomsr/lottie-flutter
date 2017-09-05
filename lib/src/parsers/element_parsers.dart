@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:Lotie_Flutter/src/animatables.dart';
-import 'package:Lotie_Flutter/src/values.dart';
+import 'package:lottie_flutter/src/animatables.dart';
+import 'package:lottie_flutter/src/values.dart';
 
 String parseName(dynamic map) => map['nm'];
 

@@ -1,6 +1,6 @@
 
 import 'dart:ui';
-import 'package:Lotie_Flutter/src/parsers/parsers.dart';
+import 'package:lottie_flutter/src/parsers/parsers.dart';
 import 'package:flutter/animation.dart' show Curve, Curves, Cubic;
 
 class Keyframe<T> {

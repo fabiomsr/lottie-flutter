@@ -1,10 +1,10 @@
 import 'dart:math';
-import 'package:Lotie_Flutter/src/mathutils.dart';
-import 'package:Lotie_Flutter/src/painting.dart' show Mask;
-import 'package:Lotie_Flutter/src/parsers/parsers.dart';
-import 'package:Lotie_Flutter/src/utils.dart';
-import 'package:Lotie_Flutter/src/values.dart';
-import 'package:Lotie_Flutter/src/keyframes.dart';
+import 'package:lottie_flutter/src/mathutils.dart';
+import 'package:lottie_flutter/src/painting.dart' show Mask;
+import 'package:lottie_flutter/src/parsers/parsers.dart';
+import 'package:lottie_flutter/src/utils.dart';
+import 'package:lottie_flutter/src/values.dart';
+import 'package:lottie_flutter/src/keyframes.dart';
 import 'package:flutter/painting.dart' show Color, Offset, Path;
 import 'package:meta/meta.dart';
 
